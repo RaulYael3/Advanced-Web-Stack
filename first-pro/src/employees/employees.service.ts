@@ -4,18 +4,34 @@ import { UpdateEmployeeDto } from './dto/update-employee.dto';
 
 @Injectable()
 export class EmployeesService {
-  private readonly employees = [
-    name: 'Alberto',
-    lastName: 'Gonzalez',
-    phoneNumber: "XXX123134"
-  ]
+  private readonly employees: CreateEmployeeDto[] = [
+    {
+      id: 1,
+      name: 'Alberto',
+      lastName: 'Gonzalez',
+      phoneNumber: 'XXX123135',
+    },
+    {
+      id: 2,
+      name: 'Maria',
+      lastName: 'Gonzalez',
+      phoneNumber: 'XXX123136',
+    },
+    {
+      id: 3,
+      name: 'Juan',
+      lastName: 'Gonzalez',
+      phoneNumber: 'XXX123137',
+    },
+  ];
 
   create(createEmployeeDto: CreateEmployeeDto) {
-    return 'This action adds a new employee';
+    this.employees.push(createEmployeeDto);
+    return CreateEmployeeDto;
   }
 
   findAll() {
-    return `This action returns all employees`;
+    return this.employees;
   }
 
   findOne(id: number) {

@@ -30,7 +30,9 @@ export class ProductsService {
   ];
 
   create(createProductDto: CreateProductDto) {
-    createProductDto.productId = uuidv4();
+    if (!createProductDto.productId) {
+      createProductDto.productId = uuidv4();
+    }
     this.products.push(createProductDto);
     return createProductDto;
   }

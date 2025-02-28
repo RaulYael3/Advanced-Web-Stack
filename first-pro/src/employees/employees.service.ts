@@ -4,7 +4,7 @@ import { UpdateEmployeeDto } from './dto/update-employee.dto';
 
 @Injectable()
 export class EmployeesService {
-  private readonly employees: CreateEmployeeDto[] = [
+  private employees: CreateEmployeeDto[] = [
     {
       id: 1,
       name: 'Alberto',
@@ -26,8 +26,9 @@ export class EmployeesService {
   ];
 
   create(createEmployeeDto: CreateEmployeeDto) {
+    createEmployeeDto.id = this.employees.length;
     this.employees.push(createEmployeeDto);
-    return CreateEmployeeDto;
+    return createEmployeeDto;
   }
 
   findAll() {
@@ -35,14 +36,29 @@ export class EmployeesService {
   }
 
   findOne(id: number) {
-    return `This action returns a #${id} employee`;
+    const employee = this.employees.filter((employee) => employee.id === id)[0];
+    return employee;
   }
 
   update(id: number, updateEmployeeDto: UpdateEmployeeDto) {
-    return `This action updates a #${id} employee`;
+    let employeeToUpdate = this.findOne(id);
+    employeeToUpdate = {
+      ...employeeToUpdate,
+      ...updateEmployeeDto,
+    };
+    this.employees = this.employees.map((employee) => {
+      if (employee.id === id) {
+        employee = employeeToUpdate;
+      }
+
+      return employee;
+    });
+
+    return employeeToUpdate;
   }
 
   remove(id: number) {
-    return `This action removes a #${id} employee`;
+    this.employees = this.employees.filter((employees) => employees.id !== id);
+    return this.employees;
   }
 }

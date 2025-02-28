@@ -30,7 +30,9 @@ export class ProductsService {
   ];
 
   create(createProductDto: CreateProductDto) {
-    return 'This action adds a new product';
+    createProductDto.productId = uuidv4();
+    this.products.push(createProductDto);
+    return createProductDto;
   }
 
   findAll() {
@@ -46,10 +48,8 @@ export class ProductsService {
   }
 
   findByProvider(id: string) {
-    const products = this.products.filter(
-      (product) => product.provider === id,
-    )[0];
-    if (!products) throw new NotFoundException();
+    const products = this.products.filter((product) => product.provider === id);
+    if (products.length === 0) throw new NotFoundException();
     return products;
   }
 
@@ -73,9 +73,7 @@ export class ProductsService {
 
   remove(id: string) {
     this.findOne(id);
-    this.products = this.products.filter(
-      product => product.productId !== id;
-    )
+    this.products = this.products.filter((product) => product.productId !== id);
     return this.products;
   }
 }

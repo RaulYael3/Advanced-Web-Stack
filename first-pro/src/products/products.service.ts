@@ -24,9 +24,7 @@ export class ProductsService {
   }
 
   async findOne(id: string) {
-    const products = await this.productRepository.findOne({
-      where: { productId: id },
-    });
+    const products = await this.productRepository.findOneBy({ productId: id });
     if (!products) throw new NotFoundException();
     return products;
   }
@@ -38,15 +36,16 @@ export class ProductsService {
   // }
 
   async update(id: string, updateProductDto: UpdateProductDto) {
-    const productToUpdate = await this.findOne(id);
-    const updatedProduct = Object.assign(productToUpdate, updateProductDto);
-    await this.productRepository.save(updatedProduct);
-    return updatedProduct;
+    const productToUpdate = await this.productRepository.preload({
+      productId: id,
+      ...updateProductDto,
+    });
+    if (!productToUpdate) throw new NotFoundException();
+    await this.productRepository.save(productToUpdate);
+    return productToUpdate;
   }
 
   async remove(id: string) {
-    const product = await this.findOne(id);
-    await this.productRepository.remove(product);
-    return { message: `Product with id ${id} has been deleted` };
+    return this.productRepository.delete({ productId: id });
   }
 }

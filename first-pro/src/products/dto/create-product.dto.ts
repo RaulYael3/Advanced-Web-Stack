@@ -23,7 +23,7 @@ export class CreateProductDto {
   @IsInt()
   countSeal: number;
 
-  @IsUUID('4')
-  @IsString()
-  provider: string;
+  // @IsUUID('4')
+  // @IsString()
+  // provider: string;
 }

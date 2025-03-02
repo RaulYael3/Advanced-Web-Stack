@@ -9,12 +9,13 @@ import { ProductsModule } from './products/products.module';
   imports: [
     TypeOrmModule.forRoot({
       type: 'postgres',
-      host: process.env.host,
-      port: +!process.env.port,
-      username: process.env.name,
-      password: process.env.pass,
-      database: 'test',
+      host: process.env.DATABASE_HOST || 'localhost',
+      port: 5432,
+      username: process.env.DATABASE_USER || 'postgres',
+      password: process.env.DATABASE_PASSWORD || 'jajaj1234jajaj',
+      database: process.env.DATABASE_NAME || 'ocso_db',
       entities: [],
+      autoLoadEntities: true,
       synchronize: true,
     }),
     EmployeesModule,

@@ -30,6 +30,14 @@ export class ProvidersService {
     return provider;
   }
 
+  async findByName(name: string) {
+    const provider = await this.providerRepository.findOneBy({
+      providerName: name,
+    });
+    if (!provider) throw new NotFoundException();
+    return provider;
+  }
+
   async update(id: string, updateProviderDto: UpdateProviderDto) {
     const providertoUpdate = await this.providerRepository.preload({
       providerId: id,

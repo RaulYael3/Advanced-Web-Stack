@@ -27,6 +27,11 @@ export class ProvidersController {
     return this.providersService.findAll();
   }
 
+  @Get('/name/:name')
+  findByName(@Param('name') name: string) {
+    return this.providersService.findByName(name);
+  }
+
   @Get(':id')
   findOne(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
     return this.providersService.findOne(id);

@@ -12,4 +12,10 @@ export class Employee {
 
   @Column('int')
   phoneNumber: number;
+
+  @Column('text')
+  email: string;
+
+  @Column({ type: 'text', nullable: true })
+  photoUrl: string;
 }

@@ -3,7 +3,7 @@ import { CreateProviderDto } from './dto/create-provider.dto';
 import { UpdateProviderDto } from './dto/update-provider.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Provider } from './entities/provider.entity';
-import { Repository } from 'typeorm';
+import { Repository, Like } from 'typeorm';
 
 @Injectable()
 export class ProvidersService {
@@ -32,7 +32,7 @@ export class ProvidersService {
 
   async findByName(name: string) {
     const provider = await this.providerRepository.findOneBy({
-      providerName: name,
+      providerName: Like(`%${name}%`),
     });
     if (!provider) throw new NotFoundException();
     return provider;

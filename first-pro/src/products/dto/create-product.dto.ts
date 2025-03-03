@@ -9,21 +9,19 @@ import {
 
 export class CreateProductDto {
   @IsString()
-  @IsUUID('4')
-  @IsOptional()
-  productId: string;
-
-  @IsString()
   @MaxLength(50)
-  name: string;
+  @IsOptional()
+  name?: string;
 
-  @IsNumber()
-  price: number;
+  @IsNumber({ allowInfinity: false, allowNaN: false })
+  @IsOptional()
+  price?: number;
 
   @IsInt()
-  countSeal: number;
+  @IsOptional()
+  countSeal?: number;
 
-  // @IsUUID('4')
-  // @IsString()
-  // provider: string;
+  @IsUUID('4')
+  @IsOptional()
+  providerId?: string;
 }

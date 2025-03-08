@@ -2,13 +2,20 @@ import { Injectable } from '@nestjs/common';
 import { CreateLocationDto } from './dto/create-location.dto';
 import { UpdateLocationDto } from './dto/update-location.dto';
 import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Location } from './entities/location.entity';
 
 @Injectable()
 export class LocationsService {
-  constructor(private locationRepository: Repository<Location>) {}
+  constructor(
+    @InjectRepository(Location)
+    private locationRepository: Repository<Location>,
+  ) {}
 
   create(createLocationDto: CreateLocationDto) {
-    return this.locationRepository.save(createLocationDto);
+    const location = this.locationRepository.create(createLocationDto);
+    const savedLocation = this.locationRepository.save(location);
+    return savedLocation;
   }
 
   findAll() {

@@ -14,8 +14,13 @@ import { CreateUserDto } from './dto/create-user.dto';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post()
+  @Post('singup')
   async singup(createAuthDto: CreateUserDto) {
-    await this.authService.registerUser(createAuthDto);
+    return await this.authService.registerUser(createAuthDto);
+  }
+
+  @Post('login')
+  async login(@Body() createUserDto: CreateUserDto) {
+    return await this.authService.loginUser(createUserDto);
   }
 }

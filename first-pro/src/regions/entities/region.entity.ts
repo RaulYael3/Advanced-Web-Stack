@@ -1,1 +1,16 @@
-export class Region {}
+import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+
+@Entity()
+export class Region {
+  @PrimaryGeneratedColumn('increment')
+  regionId: number;
+
+  @Column({
+    type: 'text',
+    unique: true,
+  })
+  regionName: string;
+
+  @Column('json')
+  regionState: string[];
+}

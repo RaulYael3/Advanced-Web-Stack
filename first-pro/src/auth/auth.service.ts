@@ -1,32 +1,30 @@
-import {
-  Injectable,
-  NotFoundException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import * as bcrypt from 'bcrypt';
-import jwt from 'jsonwebtoken';
+import { JwtService } from '@nestjs/jwt';
+import { LogionUserDto } from './dto/logoin-user.dto';
 
 @Injectable()
 export class AuthService {
   constructor(
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private jwtService: JwtService,
   ) {}
 
-  registerUser(createUserDto: CreateUserDto) {
-    createUserDto.userPassword = bcrypt.hashSync(createUserDto.userPassword, 5);
-    const user = this.userRepository.create(createUserDto);
+  registerUser(loginUser: LogionUserDto) {
+    loginUser.userPassword = bcrypt.hashSync(loginUser.userPassword, 5);
+    const user = this.userRepository.create(loginUser);
     const savedUser = this.userRepository.save(user);
     return savedUser;
   }
 
-  async loginUser(createUserDto: CreateUserDto) {
+  async loginUser(loginUser: LogionUserDto) {
     const user = await this.userRepository.findOne({
-      where: { userEmail: createUserDto.userEmail },
+      where: { userEmail: loginUser.userEmail },
     });
 
     if (!user) {
@@ -34,7 +32,7 @@ export class AuthService {
     }
 
     const match = await bcrypt.compare(
-      createUserDto.userPassword,
+      loginUser.userPassword,
       user.userPassword,
     );
 
@@ -42,14 +40,12 @@ export class AuthService {
       throw new UnauthorizedException('The password is incorrect');
     }
 
-    const token = jwt.sign(
-      {
-        userId: user.userId,
-        email: user.userEmail,
-      },
-      'SECRET KEY',
-      { expiresIn: '1h' },
-    );
+    const payload = {
+      user: user.userId,
+      email: user.userEmail,
+    };
+
+    const token = this.jwtService.sign(payload);
 
     return { token };
   }

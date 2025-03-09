@@ -15,7 +15,7 @@ export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('singup')
-  async singup(createAuthDto: CreateUserDto) {
+  async singup(@Body() createAuthDto: CreateUserDto) {
     return await this.authService.registerUser(createAuthDto);
   }
 

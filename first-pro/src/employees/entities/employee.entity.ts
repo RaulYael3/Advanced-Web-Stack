@@ -12,28 +12,30 @@ import { User } from 'src/auth/entities/user.entity';
 @Entity()
 export class Employee {
   @PrimaryGeneratedColumn('uuid')
-  id: string;
+  employeeId: string;
 
   @Column({ type: 'varchar', length: 50 })
-  name: string;
+  employeeName: string;
 
   @Column({ type: 'varchar', length: 50 })
-  lastName: string;
+  employeeLastName: string;
 
   @Column('int')
-  phoneNumber: number;
+  employeePhoneNumber: number;
 
-  @Column('text')
-  email: string;
+  @Column('text', {
+    unique: true,
+  })
+  employeeEmail: string;
 
   @Column({ type: 'text', nullable: true })
-  photoUrl: string;
+  employeePhotoUrl: string;
 
   @ManyToOne(() => Location, (location) => location.employee)
   @JoinColumn({
     name: 'locationiId',
   })
-  location: Location;
+  employeeLocation: Location;
 
   @OneToOne(() => User)
   @JoinColumn({

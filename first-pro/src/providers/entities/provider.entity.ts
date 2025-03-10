@@ -6,7 +6,9 @@ export class Provider {
   @PrimaryGeneratedColumn()
   providerId: string;
 
-  @Column('text')
+  @Column('text', {
+    unique: true,
+  })
   providerName: string;
 
   @Column('text')

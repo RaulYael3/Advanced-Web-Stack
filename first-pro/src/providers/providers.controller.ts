@@ -30,7 +30,7 @@ export class ProvidersController {
 
   @Get()
   findAll(@UserData() user: User) {
-    if (!user.userRoles.includes('Admin'))
+    if (!user.userRoles.includes('Employee'))
       throw new UnauthorizedException("You're not admin");
     return this.providersService.findAll();
   }

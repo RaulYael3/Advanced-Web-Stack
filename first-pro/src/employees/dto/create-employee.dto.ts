@@ -1,5 +1,7 @@
 import {
+  IsEmail,
   IsNumber,
+  IsObject,
   IsOptional,
   IsString,
   IsUUID,
@@ -10,16 +12,24 @@ export class CreateEmployeeDto {
   @IsString()
   @IsUUID('4')
   @IsOptional()
-  id?: string;
+  employeeId?: string;
 
   @IsString()
   @MaxLength(50)
-  name: string;
+  employeeName: string;
 
   @IsString()
   @MaxLength(50)
-  lastName: string;
+  employeeLastName: string;
 
   @IsNumber()
-  phoneNumber: number;
+  employeePhoneNumber: number;
+
+  @IsString()
+  @IsEmail()
+  employeeEmail: string;
+
+  @IsOptional()
+  @IsObject()
+  location: Location;
 }

@@ -44,6 +44,12 @@ export class EmployeesController {
   }
 
   @Auth(ROLES.MANAGER)
+  @Get('/location/:id')
+  findAllLocation(@Param('id') id: string) {
+    return this.employeesService.findByLocation(+id);
+  }
+
+  @Auth(ROLES.MANAGER)
   @Get('/:id')
   findOne(
     @Param('id', new ParseUUIDPipe({ version: '4' }))

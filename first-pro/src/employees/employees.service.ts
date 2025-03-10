@@ -24,21 +24,23 @@ export class EmployeesService {
 
   findByLocation(id: number) {
     return this.employeesRepository.findBy({
-      location: {
-        locationId: id,
+      employeeLocation: {
+        location: id,
       },
     });
   }
 
   async findOne(id: string) {
-    const employee = await this.employeesRepository.findOneBy({ id: id });
+    const employee = await this.employeesRepository.findOneBy({
+      employeeId: id,
+    });
     if (!employee) throw new NotFoundException();
     return employee;
   }
 
   async update(id: string, updateEmployeeDto: UpdateEmployeeDto) {
     const employeeToUpdate = await this.employeesRepository.preload({
-      id: id,
+      employeeId: id,
       ...updateEmployeeDto,
     });
 
@@ -48,6 +50,6 @@ export class EmployeesService {
   }
 
   async remove(id: string) {
-    return this.employeesRepository.delete({ id: id });
+    return this.employeesRepository.delete({ employeeId: id });
   }
 }

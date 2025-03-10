@@ -16,13 +16,35 @@ import { UpdateEmployeeDto } from './dto/update-employee.dto';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ROLES } from 'src/auth/constants/roles.constants';
 import { Auth } from 'src/auth/decorators/auth.decorators';
+import { ApiResponse } from '@nestjs/swagger';
+import { ApiAuth } from 'src/auth/decorators/api.decorators';
 
+@ApiAuth()
 @Controller('employees')
 export class EmployeesController {
   constructor(private readonly employeesService: EmployeesService) {}
 
   @Auth(ROLES.MANAGER)
   @Post()
+  @ApiResponse({
+    status: 201,
+    example: {
+      employeeId: 'UUID',
+      employeeName: 'Raul Yael',
+      employeeLastName: 'Perez Duarde',
+      employeeEmail: 'raul@gmail.com',
+      employeePhoneNumber: '443 590 1249',
+      employeePhotoUrl: 'URL',
+    },
+  })
+  @ApiResponse({
+    status: 401,
+    description: 'Missing or invalid token',
+  })
+  @ApiResponse({
+    status: 403,
+    description: 'Missing role',
+  })
   create(@Body() createEmployeeDto: CreateEmployeeDto) {
     return this.employeesService.create(createEmployeeDto);
   }

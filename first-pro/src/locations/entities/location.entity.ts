@@ -35,6 +35,6 @@ export class Location {
   })
   region: Region;
 
-  @OneToMany(() => Employee, (employee) => employee.location)
+  @OneToMany(() => Employee, (employee) => employee.employeeLocation)
   employee: Employee[];
 }

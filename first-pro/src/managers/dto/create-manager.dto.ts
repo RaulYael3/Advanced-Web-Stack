@@ -4,25 +4,10 @@ import {
   IsObject,
   IsOptional,
   IsString,
+  IsUUID,
   MaxLength,
 } from 'class-validator';
+import { User } from 'src/auth/entities/user.entity';
+import { Manager } from '../entities/manager.entity';
 
-export class CreateManagerDto {
-  @IsString()
-  @MaxLength(80)
-  managerFullName: string;
-
-  @IsString()
-  @IsEmail()
-  managerEmail: string;
-
-  @IsString()
-  managerPhoneNumber: string;
-
-  @IsNumber()
-  managerSalary: number;
-
-  @IsObject()
-  @IsOptional()
-  location: Location;
-}
+export class CreateManagerDto extends Manager {}

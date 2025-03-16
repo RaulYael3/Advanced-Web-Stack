@@ -1,3 +1,11 @@
+import { Button } from "@heroui/react";
+
 export default function SignupPage(){
-    return "Sign up"
+    return (
+        <>
+            <Button color="success">
+                JAJAJ
+            </Button>
+        </>
+    )
 }

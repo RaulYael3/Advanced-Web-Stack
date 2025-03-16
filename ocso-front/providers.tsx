@@ -1,4 +1,4 @@
-import { HeroUIProvider } from "@heroui/react";
+import { HeroUIProvider } from "@heroui/system";
 
 export default function Providers({children}: Readonly<{children: React.ReactNode}>){
     return(

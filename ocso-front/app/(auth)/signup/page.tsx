@@ -1,11 +1,7 @@
-import { Button } from "@heroui/react";
+import { Button } from "@heroui/button";
 
 export default function SignupPage(){
     return (
-        <>
-            <Button color="success">
-                JAJAJ
-            </Button>
-        </>
+        <Button color="primary">Button</Button>
     )
 }

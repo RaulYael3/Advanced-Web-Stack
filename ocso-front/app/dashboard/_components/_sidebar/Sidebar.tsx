@@ -1,0 +1,16 @@
+import { BiHome } from "react-icons/bi";
+import { LuTruck, LuUser, LuUsers, LuWheat } from "react-icons/lu";
+import NavItem from "./Navitem";
+
+export default function Sidebar(){
+    return(
+        <nav className="w-[10vw] h-[90vh] bg-cyan-200 flex flex-col items-center pt-8 gap-10">
+            <NavItem icon={<BiHome className="text-2xl"/>} path="/dashboard"/>
+
+            <LuTruck className="text-2xl"/>
+            <LuWheat className="text-2xl"/>
+            <LuUser className="text-2xl"/>
+            <LuUsers className="text-2xl"/>
+        </nav>
+    )
+}

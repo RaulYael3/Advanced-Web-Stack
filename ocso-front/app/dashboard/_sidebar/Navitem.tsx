@@ -1,4 +1,5 @@
 "use client"
+import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ReactNode } from "react";
 
@@ -10,12 +11,14 @@ interface NavItemProps {
 const NavItem = ({icon, path}: NavItemProps) => {
     const currentPath = usePathname();
         return (
-        <a href={path} className={path === currentPath 
-            ? "bg-cyan-300 w-full flex justify-center transition-colors py-1.5" 
-            : "bg-cyan-200 w-full flex justify-center transition-colors py-1.5"
-        }>
-            {icon}
-        </a>
+            <Link href={path} className="w-full flex justify-center">
+                <span className={path === currentPath 
+                    ? "bg-cyan-300 w-10/12 flex justify-center rounded-md transition-colors duration-300 py-1.5" 
+                    : "flex justify-center w-10/12 py-1.5"
+                }>
+                    {icon}
+                </span>
+            </Link>
     )
 }
 

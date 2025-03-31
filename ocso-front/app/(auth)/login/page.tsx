@@ -1,6 +1,17 @@
-export default function LoginPage(){
+import { API_URL } from "@/constants"
+import axios from "axios"
+import React from "react"
+
+export default  function LoginPage(){
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        const formData = new FormData(e.target)
+        const {data} = await axios.post(`${API_URL}/auth/login`, formData)
+        return
+    }
+
     return (
-        <div className="flex items-center justify-center min-h-screen bg-cyan-50">
+        <form className="flex items-center justify-center min-h-screen bg-cyan-50">
         {/* Contenedor principal con fondo naranja */}
         <div className="bg-cyan-700 p-6 rounded-lg w-full max-w-sm">
           {/* Título */}
@@ -13,6 +24,7 @@ export default function LoginPage(){
 
                 <input 
                     type="email"
+                    name="userEmail"
                     placeholder="Email"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md outline-none placeholder:text-amber-50/20 text-amber-50"
                 />
@@ -21,6 +33,7 @@ export default function LoginPage(){
 
                 <input
                     type="password"
+                    name="userPassword"
                     placeholder="password"
                     className="w-full px-3 py-2 border border-gray-300 rounded-md outline-none placeholder:text-amber-50/20 text-amber-50"
                     />
@@ -34,6 +47,6 @@ export default function LoginPage(){
                 <p className="text-xs pt-4 justify-self-end">Aun no tienes cuenta? <a href="/signup" className="text-blue-100 underline">Registrate</a></p>
 
             </div>
-        </div>
+        </form>
     )
 }

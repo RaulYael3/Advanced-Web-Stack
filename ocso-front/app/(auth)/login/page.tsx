@@ -1,3 +1,4 @@
+'use client'
 import { API_URL } from "@/constants"
 import axios from "axios"
 import React from "react"
@@ -6,12 +7,15 @@ export default  function LoginPage(){
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault()
         const formData = new FormData(e.target)
-        const {data} = await axios.post(`${API_URL}/auth/login`, formData)
+        let authData = {}
+        authData.userEmail = formData.get("userEmail")
+        authData.userPassword = formData.get("userPassword")
+        const {data} = await axios.post(`${API_URL}/auth/login`, {...authData})
         return
     }
 
     return (
-        <form className="flex items-center justify-center min-h-screen bg-cyan-50">
+        <form className="flex items-center justify-center min-h-screen bg-cyan-50" onSubmit={handleSubmit}>
         {/* Contenedor principal con fondo naranja */}
         <div className="bg-cyan-700 p-6 rounded-lg w-full max-w-sm">
           {/* Título */}
@@ -40,7 +44,7 @@ export default  function LoginPage(){
 
             </div>
                 {/* Botón de Registrarse */}
-                <button className="bg-gray-300 text-neutral-800 py-1 px-4 rounded-lg cursor-pointer mt-4 justify-self-center">
+                <button type="submit" className="bg-gray-300 text-neutral-800 py-1 px-4 rounded-lg cursor-pointer mt-4 justify-self-center">
                 Registrarse
                 </button>
 

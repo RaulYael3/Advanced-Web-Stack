@@ -1,18 +1,32 @@
 'use client'
 import { API_URL } from "@/constants"
 import axios from "axios"
-import React from "react"
+import { useRouter } from "next/router"
+import React, { useState } from "react"
 
 export default  function LoginPage(){
+    const [submiting, setSubmiting] = useState(false)
+
+    const router = useRouter()
+
     const handleSubmit = async (e: React.FormEvent) => {
+        setSubmiting(true)
         e.preventDefault()
         const formData = new FormData(e.target)
         let authData = {}
         authData.userEmail = formData.get("userEmail")
         authData.userPassword = formData.get("userPassword")
-        const {data} = await axios.post(`${API_URL}/auth/login`, {...authData}, {
-            withCredentials: true 
-        })
+        try{
+            const response = await axios.post(`${API_URL}/auth/login`, {...authData}, {
+                withCredentials: true 
+            })
+
+            if(response.status === 201) router.push('/dashboard')
+
+            setSubmiting(false)
+        } catch(e){
+            setSubmiting(false)
+        }
         return
     }
 
@@ -46,7 +60,7 @@ export default  function LoginPage(){
 
             </div>
                 {/* Botón de Registrarse */}
-                <button type="submit" className="bg-gray-300 text-neutral-800 py-1 px-4 rounded-lg cursor-pointer mt-4 justify-self-center">
+                <button type="submit" disabled={submiting} className="bg-gray-300 text-neutral-800 py-1 px-4 rounded-lg cursor-pointer mt-4 justify-self-center">
                 Registrarse
                 </button>
 

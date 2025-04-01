@@ -16,8 +16,12 @@ const CountPage = async () => {
     })
 
     return (
-        <div className="w-2/12">
-            <SelectLocation location={data}/>
+        <div className="w-5/12 h-[90vh] flex flex-col items-center">
+            <div className="w-full">
+                <div className="mx-10 w-1/2 my-10">
+                    <SelectLocation location={data}/>
+                </div>
+            </div>
         </div>
     )
 };

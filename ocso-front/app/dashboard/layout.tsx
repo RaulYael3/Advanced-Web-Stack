@@ -3,10 +3,10 @@ import Sidebar from "./_sidebar/Sidebar"
 
 export default function LayoutDashboard({
     children,
-    count
+    locations
     }:Readonly<{
         children: React.ReactNode
-        count: React.ReactNode
+        locations: React.ReactNode
     }>){
     return (
         <div className="w-screen h-screen overflow-hidden grid bg-cyan-100">
@@ -14,7 +14,7 @@ export default function LayoutDashboard({
             <div className="flex flex-row items-center">
                 <Sidebar />
                 {children}
-                {count && <div>{count}</div>}
+                {locations && <div>{locations}</div>}
             </div>
         </div>
     )

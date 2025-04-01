@@ -4,7 +4,7 @@ import NavItem from "./Navitem";
 
 export default function Sidebar(){
     return(
-        <nav className="w-[5vw] h-[90vh] bg-cyan-200 flex flex-col items-center pt-8 gap-10">
+        <nav className="w-10vw h-[90vh] bg-cyan-200 flex flex-col items-center pt-8 gap-10">
 
             <NavItem icon={<BiHome className="text-2xl"/>} path="/dashboard"/>
             <NavItem icon={<LuTruck className="text-2xl"/>} path="/dashboard/providers"/>

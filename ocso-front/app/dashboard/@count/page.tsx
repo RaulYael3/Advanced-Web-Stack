@@ -12,7 +12,8 @@ const CountPage = async () => {
         }
     })
 
-    return countLocations?.data.length
+    const amount = countLocations?.data.length
+    return <div className="w-2/12">{`Hay: ${amount} tienda${amount > 1 ? "s" : ""}`}</div>
 };
 
 export default CountPage;

@@ -5,7 +5,9 @@ import { cookies } from "next/headers"
 import { Location } from "@/entities";
 import SelectLocation from "./_components/SelectLocation"
 
-const CountPage = async () => {
+const LocationPage = async ({searchParams}:{
+    searchParams: {[key: string]: string | string[] | undefined}
+}) => {
     const userCookies = cookies()
     const token = (await userCookies).get(TOKEN_NAME)
 
@@ -19,11 +21,11 @@ const CountPage = async () => {
         <div className="w-5/12 h-[90vh] flex flex-col items-center">
             <div className="w-full">
                 <div className="mx-10 w-1/2 my-10">
-                    <SelectLocation location={data}/>
+                    <SelectLocation location={data} store={store}/>
                 </div>
             </div>
         </div>
     )
 };
 
-export default CountPage;
+export default LocationPage;

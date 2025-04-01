@@ -6,7 +6,9 @@ export default function Dashboard({searchParams}:{
     return (
         <>
             <div className="h-full w-4/12 bg-red-100">
-                <EmployeeLocation employee={searchParams?.store}/>
+                <div className="h-[90vh] overflow-hidden overflow-y-auto flex flex-col gap-10">
+                    <EmployeeLocation store={searchParams?.store}/>
+                </div>
             </div>
             
         </>

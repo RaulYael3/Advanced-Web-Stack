@@ -1,5 +1,5 @@
 import Header from "./_components/Header"
-import Sidebar from "./_sidebar/Sidebar"
+import Sidebar from "./_components/_sidebar/Sidebar"
 
 export default function LayoutDashboard({
     children,

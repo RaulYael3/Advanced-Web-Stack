@@ -18,3 +18,13 @@ export interface Employee{
     location?: Location
     user?: any
 }
+
+export interface Manager {
+    managerId: string
+    managerFullName: string
+    managerSalary: number
+    managerEmail: string
+    managerPhoneNumber: string
+    location?: Location
+    user?: any
+}

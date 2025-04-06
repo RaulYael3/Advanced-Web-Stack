@@ -1,7 +1,7 @@
-import e from 'express';
-import { Employee } from 'src/employees/entities/employee.entity';
-import { Manager } from 'src/managers/entities/manager.entity';
-import { Region } from 'src/regions/entities/region.entity';
+import { ApiProperty } from '@nestjs/swagger'
+import { Employee } from 'src/employees/entities/employee.entity'
+import { Manager } from 'src/managers/entities/manager.entity'
+import { Region } from 'src/regions/entities/region.entity'
 import {
   Column,
   Entity,
@@ -10,31 +10,32 @@ import {
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
-} from 'typeorm';
+} from 'typeorm'
 
 @Entity()
 export class Location {
   @PrimaryGeneratedColumn('increment')
-  location: number;
+  location: number
   @Column('text')
-  locationName: string;
+  locationName: string
   @Column('text')
-  locationAddress: string;
+  locationAddress: string
   @Column('simple-array')
-  locationLatLng: number[];
+  locationLatLng: number[]
 
+  // @ApiProperty({ default: '' })
   @OneToOne(() => Manager, { eager: true })
   @JoinColumn({
     name: 'managerID',
   })
-  manager: Manager;
+  manager: Manager | string
 
   @ManyToOne(() => Region, (region) => region.locations)
   @JoinColumn({
     name: 'regionId',
   })
-  region: Region;
+  region: Region
 
   @OneToMany(() => Employee, (employee) => employee.employeeLocation)
-  employee: Employee[];
+  employee: Employee[]
 }

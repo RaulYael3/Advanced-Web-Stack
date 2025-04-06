@@ -3,21 +3,27 @@ import {
   IsObject,
   IsOptional,
   IsString,
+  IsUUID,
   MaxLength,
-} from 'class-validator';
-import { Region } from 'src/regions/entities/region.entity';
+} from 'class-validator'
+import { Manager } from 'src/managers/entities/manager.entity'
+import { Region } from 'src/regions/entities/region.entity'
 
 export class CreateLocationDto {
   @IsString()
   @MaxLength(35)
-  locationName: string;
+  locationName: string
   @IsString()
   @MaxLength(160)
-  locationAddress: string;
+  locationAddress: string
   @ArrayNotEmpty()
-  locationLatLng: number[];
+  locationLatLng: number[]
 
   @IsObject()
   @IsOptional()
-  region: Region;
+  region: Region
+
+  @IsUUID()
+  @IsOptional()
+  manager: Manager
 }

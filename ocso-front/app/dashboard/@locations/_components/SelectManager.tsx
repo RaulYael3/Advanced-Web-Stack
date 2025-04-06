@@ -1,12 +1,22 @@
 'use client'
 
 import { Select, SelectItem } from "@heroui/react"
-import { Manager } from "@/entities"
+import { Manager, Location } from "@/entities"
 
-export default function SelectManager({managers}: { managers: Manager[] }) {
+export default function SelectManager({
+    managers, 
+    locations
+}: {  
+    managers: Manager[],
+    locations: Location[]
+}) {
+    const disabledKeys = locations.map((location) => {
+        return location.manager?.managerId
+    })
+
     return (
-        <Select>
-            {
+        <Select name="manager" disabledKeys={disabledKeys}>
+            {   
                 managers.map((manager) => (
                     <SelectItem key={manager.managerId} >
                         {manager.managerFullName}

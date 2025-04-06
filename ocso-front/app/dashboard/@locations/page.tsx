@@ -4,6 +4,7 @@ import axios from "axios";
 import { cookies } from "next/headers"
 import { Location } from "@/entities";
 import SelectLocation from "./_components/SelectLocation"
+import FormNewLocation from "./_components/FormNewLocation"
 
 const LocationPage = async ({searchParams}:{
     searchParams: {[key: string]: string | string[] | undefined}
@@ -23,7 +24,9 @@ const LocationPage = async ({searchParams}:{
                 <div className="mx-10 w-1/2 my-10">
                     <SelectLocation location={data} store={searchParams.store}/>
                 </div>
-                <FormNewLocation />
+                <div className="w-6/12">
+                    <FormNewLocation searchParams={searchParams} />
+                </div>
             </div>
         </div>
     )

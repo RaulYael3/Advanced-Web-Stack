@@ -5,18 +5,20 @@ import { cookies } from "next/headers"
 import { Location } from "@/entities";
 import SelectLocation from "./_components/SelectLocation"
 import FormNewLocation from "./_components/FormNewLocation"
+import { authHeaders } from "@/helpers/authHeaders"
 
 const LocationPage = async ({searchParams}:{
     searchParams: {[key: string]: string | string[] | undefined}
 }) => {
     const userCookies = cookies()
-    const token = (await userCookies).get(TOKEN_NAME)
 
-    const {data} = await axios.get<Location[]>(`${API_URL}/Locations`, {
-        headers:{
-            Authorization: `Bearer ${token}`
-        }
-    })
+    let {data} = await axios.get<Location[]>(`${API_URL}/locations`, 
+        {
+            headers:{
+                ...(await authHeaders())
+        },
+    },
+)
 
     return (
         <div className="w-5/12 h-[90vh] flex flex-col items-center">

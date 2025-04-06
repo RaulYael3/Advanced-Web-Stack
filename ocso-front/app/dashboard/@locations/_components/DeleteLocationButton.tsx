@@ -7,7 +7,14 @@ export default function DeleteLocationButton({searchParams}:{
 
     return(
         <form action={DeleteLocation}>
-            <button type="submit" className="bg-red-500 rounded-2xl py-3 p-7 justify-center">Eliminar</button>
+            <button 
+                type="submit" 
+                className="bg-red-500 rounded-2xl py-3 p-7 justify-center"
+                name="deleteValue"
+                value={searchParams.store}
+            >
+                Eliminar
+            </button>
         </form>
     )
 }

@@ -1,27 +1,43 @@
 import { Input } from "@heroui/react"
 import { createLocation } from "@/actions/locations/create"
-import axios from "axios"
-import { API_URL, TOKEN_NAME } from "@/constants"
-import { cookies } from "next/headers"
+import { API_URL} from "@/constants"
 import SelectManager from "./SelectManager"
+import { authHeaders } from "@/helpers/authHeaders"
+import { Manager } from "@/entities"
 
 export default async function FormNewLocation({searchParams}:{
     searchParams: {[key: string]: string | string[] | undefined}
 }) {
     if(!searchParams?.store) return null
-
-    const token = (await cookies()).get(TOKEN_NAME)?.value
     
-    const responseMangers = await axios.get(`${API_URL}/managers`, {
-        headers:{
-            Authorization: `Bearer ${token}`
+    /**
+     * Fetches the list of managers from the API.
+     * 
+     * @remarks
+     * This function sends a GET request to the `${API_URL}/managers` endpoint
+     * to retrieve the list of managers. It includes authentication headers
+     * obtained from the `authHeaders` function.
+     * 
+     * @throws {Error} If the fetch request fails or the response is invalid.
+     * 
+     * @returns {Promise<Response>} A promise that resolves to the response object
+     * containing the list of managers.
+     */
+    const responseMangers = await fetch(`${API_URL}/managers`, {
+        headers:{...await authHeaders()},
+        next:{
+            tags: ["dashboard:managers"]
         }
     })
-    const responseLocations = await axios.get(`${API_URL}/locations`, {
-        headers:{
-            Authorization: `Bearer ${token}`
+    const dataMangers: Manager[] = await responseMangers.json()
+
+    const responseLocations = await fetch(`${API_URL}/locations`, {
+        headers:{ ...await authHeaders() },
+        next:{
+            tags: ["dashboard:locations"]
         }
     })
+    const dataLocations: Location[] = await responseLocations.json()
 
     return(
         <form action={createLocation} className="flex flex-col gap-6 bg-orange-400 py-2 px-4 w-full rounded-lg">
@@ -30,7 +46,7 @@ export default async function FormNewLocation({searchParams}:{
             <Input label="Direccion" placeholder="Av de la luz S/N" name="locationAddress"/>
             <Input label="Latitud" placeholder="-120" name="locationLat"/>
             <Input label="Longitud" placeholder="20" name="locationLng"/>
-            <SelectManager managers={responseMangers.data} locations={responseLocations.data}/>
+            <SelectManager managers={dataMangers} locations={dataLocations}/>
             <button type="submit" className="bg-amber-500 rounded-2xl py-3 p-7 justify-center">Subir</button>
         </form>
     )

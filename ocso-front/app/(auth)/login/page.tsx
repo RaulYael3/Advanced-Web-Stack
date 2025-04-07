@@ -1,6 +1,5 @@
 'use client'
 import { API_URL } from "@/constants"
-import axios from "axios"
 import { useRouter } from "next/router"
 import React, { useState } from "react"
 
@@ -17,8 +16,10 @@ export default  function LoginPage(){
         authData.userEmail = formData.get("userEmail")
         authData.userPassword = formData.get("userPassword")
         try{
-            const response = await axios.post(`${API_URL}/auth/login`, {...authData}, {
-                withCredentials: true 
+            const response = await fetch(`${API_URL}/auth/login`,{
+                body: JSON.stringify(authData),
+                method: "POST",
+                credentials: "include",                
             })
 
             if(response.status === 201) router.push('/dashboard')

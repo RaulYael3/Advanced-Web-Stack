@@ -1,7 +1,8 @@
 'use server'
 
 import { API_URL, TOKEN_NAME } from "@/constants"
-import axios from "axios"
+import { authHeaders } from "@/helpers/authHeaders"
+import { revalidateTag } from "next/cache"
 import { cookies } from "next/headers"
 
 export async function createLocation(formData: FormData) {
@@ -24,12 +25,12 @@ export async function createLocation(formData: FormData) {
     }
 
     locations.locationLatLng = locationLatLng
-    axios.post(`${API_URL}/locations`, {
-        ...locations
-    }, {
-        headers: {
-            Authorization: `Bearer ${token}`
-        }
+    const response = await fetch(`${API_URL}/locations`, {
+        body: JSON.stringify(locations),
+        method: 'POST',
+        headers: {...await authHeaders()}
     })
+
+    if (response.status === 201) revalidateTag("dashboard:locations")
 }   
 

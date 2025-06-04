@@ -1,16 +1,17 @@
 import { Input } from '@heroui/react'
-import { createLocation } from '@/actions/locations/create'
 import { API_URL } from '@/constants'
 import SelectManager from './SelectManager'
 import { authHeaders } from '@/helpers/authHeaders'
 import { Location, Manager } from '@/entities'
+import { updateLocation } from '@/actions/locations/update'
 
 export default async function FormNewLocation({
 	store,
 }: {
 	store: { [key: string]: string | string[] | undefined }
 }) {
-	if (store === undefined || !store) return null
+	if (store === undefined || !store || typeof store === 'object') return null
+	const updateWithStoreId = updateLocation.bind(null, store)
 
 	/**
 	 * Fetches the list of managers from the API.
@@ -50,7 +51,7 @@ export default async function FormNewLocation({
 
 	return (
 		<form
-			action={createLocation}
+			action={updateWithStoreId}
 			className='flex flex-col gap-6 bg-orange-400 py-2 px-4 w-full rounded-lg'
 		>
 			<h1 className='text-3xl font-bold text-white'>

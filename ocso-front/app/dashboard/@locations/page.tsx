@@ -27,7 +27,7 @@ const LocationPage = async ({
 				<div className='w-6/12'>
 					<FormNewLocation searchParams={searchParams} />
 				</div>
-				<UpdateLocation>
+				<UpdateLocation store={searchParams.store}>
 					<FormNewLocation searchParams={searchParams} />
 				</UpdateLocation>
 			</div>

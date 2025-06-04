@@ -27,7 +27,7 @@ export async function updateLocation(store: string, formData: FormData) {
     }
 
     locations.locationLatLng = locationLatLng
-    const response = await fetch(`${API_URL}/locations`, {
+    const response = await fetch(`${API_URL}/locations/${store}`, {
         body: JSON.stringify(locations),
         method: 'PATCH',
         headers: {...await authHeaders()}

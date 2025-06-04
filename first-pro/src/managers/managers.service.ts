@@ -2,12 +2,12 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-} from '@nestjs/common';
-import { CreateManagerDto } from './dto/create-manager.dto';
-import { UpdateManagerDto } from './dto/update-manager.dto';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Manager } from './entities/manager.entity';
-import { Repository } from 'typeorm';
+} from '@nestjs/common'
+import { CreateManagerDto } from './dto/create-manager.dto'
+import { UpdateManagerDto } from './dto/update-manager.dto'
+import { InjectRepository } from '@nestjs/typeorm'
+import { Manager } from './entities/manager.entity'
+import { Repository } from 'typeorm'
 
 @Injectable()
 export class ManagersService {
@@ -17,36 +17,36 @@ export class ManagersService {
   ) {}
 
   create(createManagerDto: CreateManagerDto) {
-    const manager = this.managerRepositor.create(createManagerDto);
-    const savedManager = this.managerRepositor.save(manager);
-    return savedManager;
+    const manager = this.managerRepositor.create(createManagerDto)
+    const savedManager = this.managerRepositor.save(manager)
+    return savedManager
   }
 
   findAll() {
-    return this.managerRepositor.find();
+    return this.managerRepositor.find()
   }
 
   async findOne(id: string) {
     const manager = await this.managerRepositor.findOneBy({
       managerId: id,
-    });
-    if (!manager) throw new NotFoundException('Not found that manager by ID');
-    return manager;
+    })
+    if (!manager) throw new NotFoundException('Not found that manager by ID')
+    return manager
   }
 
   async update(id: string, updateManagerDto: UpdateManagerDto) {
     const managerToUpdate = await this.managerRepositor.preload({
       managerId: id,
       ...updateManagerDto,
-    });
+    })
 
-    if (!managerToUpdate) throw new BadRequestException();
-    return this.managerRepositor.save(managerToUpdate);
+    if (!managerToUpdate) throw new BadRequestException()
+    return this.managerRepositor.save(managerToUpdate)
   }
 
   remove(id: string) {
     return this.managerRepositor.delete({
       managerId: id,
-    });
+    })
   }
 }

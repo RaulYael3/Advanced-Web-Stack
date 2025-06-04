@@ -1,8 +1,10 @@
 'use server'
 
 import { API_URL, TOKEN_NAME } from "@/constants"
+import { Location } from "@/entities"
 import { authHeaders } from "@/helpers/authHeaders"
 import { revalidateTag } from "next/cache"
+import { redirect } from "next/navigation"
 import { cookies } from "next/headers"
 
 export async function createLocation(formData: FormData) {
@@ -31,6 +33,10 @@ export async function createLocation(formData: FormData) {
         headers: {...await authHeaders()}
     })
 
-    if (response.status === 201) revalidateTag("dashboard:locations")
+    const data: Location = await response.json()
+    if (response.status === 201) {
+        revalidateTag("dashboard:locations")
+        redirect(`/dashboard?store=${data.locationId}`)
+    }
 }   
 

@@ -3,14 +3,14 @@ import { createLocation } from '@/actions/locations/create'
 import { API_URL } from '@/constants'
 import SelectManager from './SelectManager'
 import { authHeaders } from '@/helpers/authHeaders'
-import { Manager } from '@/entities'
+import { Location, Manager } from '@/entities'
 
 export default async function FormNewLocation({
-	searchParams,
+	store,
 }: {
-	searchParams: { [key: string]: string | string[] | undefined }
+	store: { [key: string]: string | string[] | undefined }
 }) {
-	if (!searchParams?.store) return null
+	if (store === undefined || !store) return null
 
 	/**
 	 * Fetches the list of managers from the API.
@@ -39,7 +39,14 @@ export default async function FormNewLocation({
 			tags: ['dashboard:locations'],
 		},
 	})
+
 	const dataLocations: Location[] = await responseLocations.json()
+	let foundLocation = dataLocations.find(
+		(locat) => locat.locationId === +store
+	)
+	let foundManager = dataMangers.find(
+		(manager) => manager.managerId === foundLocation?.manager?.managerId
+	)
 
 	return (
 		<form
@@ -50,18 +57,35 @@ export default async function FormNewLocation({
 				Crear nueva tienda
 			</h1>
 			<Input
+				defaultValue={foundLocation?.locationName}
 				label='Nombre de tienda'
 				placeholder='Ocso Juriquilla'
 				name='locationName'
 			/>
 			<Input
+				defaultValue={foundLocation?.locationAddress}
 				label='Direccion'
 				placeholder='Av de la luz S/N'
 				name='locationAddress'
 			/>
-			<Input label='Latitud' placeholder='-120' name='locationLat' />
-			<Input label='Longitud' placeholder='20' name='locationLng' />
-			<SelectManager managers={dataMangers} locations={dataLocations} />
+			<Input
+				defaultValue={foundLocation?.locationLatLng[0].toString()}
+				label='Latitud'
+				placeholder='-120'
+				name='locationLat'
+			/>
+			<Input
+				defaultValue={foundLocation?.locationLatLng[1].toString()}
+				label='Longitud'
+				placeholder='20'
+				name='locationLng'
+			/>
+			<SelectManager
+				defaultManager={foundManager?.managerId}
+				managers={dataMangers}
+				locations={dataLocations}
+			/>
+
 			<button
 				type='submit'
 				className='bg-amber-500 rounded-2xl py-3 p-7 justify-center'

@@ -1,28 +1,36 @@
 'use client'
 
-import { Select, SelectItem } from "@heroui/react"
-import { Manager, Location } from "@/entities"
+import { Select, SelectItem } from '@heroui/react'
+import { Manager, Location } from '@/entities'
+
+interface SelectManagerProps {
+	managers: Manager[]
+	locations: Location[]
+	defaultManager?: string
+}
 
 export default function SelectManager({
-    managers, 
-    locations
-}: {  
-    managers: Manager[],
-    locations: Location[]
-}) {
-    const disabledKeys = locations.map((location) => {
-        return location.manager?.managerId
-    })
+	managers,
+	locations,
+	defaultManager,
+}: SelectManagerProps) {
+	const disabledKeys = locations.map((location) => {
+		return location.manager?.managerId
+	})
 
-    return (
-        <Select name="manager" disabledKeys={disabledKeys}>
-            {   
-                managers.map((manager) => (
-                    <SelectItem key={manager.managerId} >
-                        {manager.managerFullName}
-                    </SelectItem>
-                ))
-            }
-        </Select>
-    )
+	return (
+		<Select
+			defaultSelectedKeys={
+				defaultManager !== undefined ? [defaultManager] : []
+			}
+			name='manager'
+			disabledKeys={disabledKeys}
+		>
+			{managers.map((manager) => (
+				<SelectItem key={manager.managerId}>
+					{manager.managerFullName}
+				</SelectItem>
+			))}
+		</Select>
+	)
 }

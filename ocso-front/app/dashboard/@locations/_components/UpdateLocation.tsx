@@ -18,13 +18,15 @@ export default function UpdateLocation({
 
 	return (
 		<>
-			<Button onPress={onOpen}>Open Modal</Button>
+			<Button onPress={onOpen} color='primary'>
+				Editar tienda
+			</Button>
 			<Modal isOpen={isOpen} onOpenChange={onOpenChange}>
 				<ModalContent>
 					{() => (
 						<>
 							<ModalHeader className='flex flex-col gap-1'>
-								Modal Title
+								Crear Tienda
 							</ModalHeader>
 							<ModalBody>{children}</ModalBody>
 						</>

@@ -1,4 +1,4 @@
-import ManagerCard from './_components/MaanagerCard'
+import ManagersCard from './_components/MaanagersCard'
 
 export default function LayoutManagers({
 	children,
@@ -8,9 +8,9 @@ export default function LayoutManagers({
 	return (
 		<>
 			<div className='w-4/12 max-h-[90vh] h-[90vh] overflow-y-auto'>
-				<ManagerCard />
+				<ManagersCard />
 			</div>
-			<div>{children}</div>
+			<div className='w-7/12'>{children}</div>
 		</>
 	)
 }

@@ -3,8 +3,10 @@
 import { API_URL } from "@/constants"
 import { authHeaders } from "@/helpers/authHeaders"
 import { revalidateTag } from "next/cache"
+import { redirect } from "next/navigation"
 
-export default async function createManager(managerId: string, formData: FormData){
+
+export default async function deleteManager(managerId: string, formData: FormData){
     let manager: any = {}
     for(const key of formData.keys()) {
         manager[key] = formData.get(key)
@@ -17,5 +19,9 @@ export default async function createManager(managerId: string, formData: FormDat
             ...headers,
         }
     })
-    revalidateTag("dashboard:managers")
+
+    if(response.status === 200) {
+        revalidateTag("dashboard:managers")
+        redirect('/dashboard/managers')
+    }
 }

@@ -3,6 +3,7 @@ import { Manager } from '@/entities'
 import { authHeaders } from '@/helpers/authHeaders'
 import { Card, CardBody, CardHeader, Divider } from '@heroui/react'
 import ManagerCard from './components/ManagerCard'
+import DeleteManager from './components/DeleteManagerButton'
 
 export default async function ManagerPage({
 	params,
@@ -20,5 +21,10 @@ export default async function ManagerPage({
 		},
 	})
 	const data: Manager = await response.json()
-	return <ManagerCard manager={data} />
+	return (
+		<div className='flex flex-col gap-10 flex-grow items-center'>
+			<ManagerCard manager={data} />
+			<DeleteManager managerId={data.managerId} />
+		</div>
+	)
 }

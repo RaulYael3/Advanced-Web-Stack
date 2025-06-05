@@ -4,10 +4,11 @@ import { authHeaders } from '@/helpers/authHeaders'
 import { Input, Button } from '@heroui/react'
 import { LuDollarSign } from 'react-icons/lu'
 import SelectProvider from './_components/SelectProvider'
+
 const ProductsPage = async () => {
 	const responseProivders = await fetch(`${API_URL}/providers`, {
 		headers: {
-			...authHeaders(),
+			...(await authHeaders()),
 		},
 	})
 	const providers = await responseProivders.json()

@@ -1,6 +1,7 @@
 import { API_URL } from '@/constants'
 import { Manager } from '@/entities'
 import { authHeaders } from '@/helpers/authHeaders'
+import { Card } from '@heroui/react'
 
 export default async function CountManagerPage() {
 	const headers = await authHeaders()
@@ -19,12 +20,12 @@ export default async function CountManagerPage() {
 		data.length
 
 	return (
-		<div>
+		<Card className='w-fit py-4 px-6 text-center'>
 			<h1>
 				Hay {data.length} manager{data.length > 1 ? 's' : ''}{' '}
 			</h1>
 			<h1>Hay {countNoStore} sin tienda</h1>
 			<h2>El salario promedio es de: {averageSalary}$</h2>
-		</div>
+		</Card>
 	)
 }

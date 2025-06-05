@@ -23,7 +23,7 @@ export class ManagersService {
   }
 
   findAll() {
-    return this.managerRepositor.find()
+    return this.managerRepositor.find({ relations: { location: true } })
   }
 
   async findOne(id: string) {

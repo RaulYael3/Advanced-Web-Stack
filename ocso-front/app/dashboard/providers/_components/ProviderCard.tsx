@@ -3,7 +3,7 @@ import { Card, CardBody, CardHeader, Divider } from '@heroui/react'
 
 export default function ProviderCard({ provider }: { provider: Provider }) {
 	return (
-		<Card className='w-4/12'>
+		<Card className='w-full min-w-[350px]'>
 			<CardHeader>{provider.providerName}</CardHeader>
 			<Divider />
 			<CardBody>

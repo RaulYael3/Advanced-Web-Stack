@@ -27,8 +27,13 @@ export class ManagersService {
   }
 
   async findOne(id: string) {
-    const manager = await this.managerRepositor.findOneBy({
-      managerId: id,
+    const manager = await this.managerRepositor.findOne({
+      where: {
+        managerId: id,
+      },
+      relations: {
+        location: true,
+      },
     })
     if (!manager) throw new NotFoundException('Not found that manager by ID')
     return manager

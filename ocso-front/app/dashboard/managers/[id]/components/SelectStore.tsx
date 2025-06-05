@@ -18,6 +18,8 @@ export default function SelectStore({
 
 	return (
 		<Select
+			label='Tienda'
+			name='location'
 			defaultSelectedKeys={defaultStore ? [defaultStore] : []}
 			disabledKeys={disabledStores}
 		>

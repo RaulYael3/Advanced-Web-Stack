@@ -8,6 +8,7 @@ import { LocationsModule } from './locations/locations.module'
 import { RegionsModule } from './regions/regions.module'
 import { AuthModule } from './auth/auth.module'
 import { JwtModule } from '@nestjs/jwt'
+import { AwsModule } from './aws/aws.module';
 
 @Module({
   imports: [
@@ -35,6 +36,7 @@ import { JwtModule } from '@nestjs/jwt'
     LocationsModule,
     RegionsModule,
     AuthModule,
+    AwsModule,
   ],
   controllers: [],
   providers: [],

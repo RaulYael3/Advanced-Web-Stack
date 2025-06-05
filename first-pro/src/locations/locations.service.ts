@@ -4,12 +4,15 @@ import { UpdateLocationDto } from './dto/update-location.dto'
 import { Repository } from 'typeorm'
 import { InjectRepository } from '@nestjs/typeorm'
 import { Location } from './entities/location.entity'
+import { Manager } from 'src/managers/entities/manager.entity'
 
 @Injectable()
 export class LocationsService {
   constructor(
     @InjectRepository(Location)
     private locationRepository: Repository<Location>,
+    @InjectRepository(Manager)
+    private managerRepository: Repository<Manager>,
   ) {}
 
   create(createLocationDto: CreateLocationDto) {
@@ -18,19 +21,47 @@ export class LocationsService {
     return savedLocation
   }
 
-  findAll() {
-    return `This action returns all locations`
+  async findAll() {
+    return await this.locationRepository.find()
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} location`
+  async findOne(id: number) {
+    const location = await this.locationRepository.findOneBy({
+      location: id,
+    })
+    if (!location) throw new Error(`Location with id ${id} not found`)
+    return location
   }
 
-  update(id: number, updateLocationDto: UpdateLocationDto) {
-    return `This action updates a #${id} location`
+  async update(id: number, updateLocationDto: UpdateLocationDto) {
+    await this.managerRepository
+      .createQueryBuilder()
+      .update()
+      .set({ location: undefined })
+      .where('locationId = :id', { id })
+      .execute()
+
+    const location = await this.locationRepository.preload({
+      location: id,
+      ...updateLocationDto,
+    })
+    if (!location) throw new Error(`Location with id ${id} not found`)
+    const savedLocation = await this.locationRepository.save(location)
+
+    const updated = await this.managerRepository.preload({
+      managerId: updateLocationDto.manager?.managerId,
+      location: location,
+    })
+    if (!updated)
+      throw new Error(
+        `Manager with id ${updateLocationDto.manager?.managerId} not found`,
+      )
+    await this.managerRepository.save(updated)
+
+    return savedLocation
   }
 
   remove(id: number) {
-    return `This action removes a #${id} location`
+    return this.locationRepository.delete({ location: id })
   }
 }

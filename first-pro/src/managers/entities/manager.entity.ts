@@ -4,33 +4,34 @@ import {
   JoinColumn,
   OneToOne,
   PrimaryGeneratedColumn,
-} from 'typeorm';
-import { Location } from 'src/locations/entities/location.entity';
-import { User } from 'src/auth/entities/user.entity';
+} from 'typeorm'
+import { Location } from 'src/locations/entities/location.entity'
+import { User } from 'src/auth/entities/user.entity'
 
 @Entity()
 export class Manager {
   @PrimaryGeneratedColumn('uuid')
-  managerId: string;
+  managerId: string
 
   @Column('text')
-  managerFullName: string;
+  managerFullName: string
 
   @Column('float')
-  managerSalary: number;
+  managerSalary: number
 
   @Column('text', {
     unique: true,
   })
-  managerEmail: string;
+  managerEmail: string
 
   @Column('text')
-  managerPhoneNumber: string;
+  managerPhoneNumber: string
 
   @OneToOne(() => Location)
-  location: Location;
+  @JoinColumn({ name: 'locationId' })
+  location: Location
 
   @OneToOne(() => User)
   @JoinColumn({ name: 'userId' })
-  user: User;
+  user: User
 }

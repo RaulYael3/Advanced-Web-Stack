@@ -10,7 +10,7 @@ export default function SelectStore({
 }) {
 	const disabledStores = stores
 		.map((store) => {
-			if (store.manager) {
+			if (store.manager && store.locationId !== defaultStore) {
 				return store.locationId.toString()
 			}
 		})

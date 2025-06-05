@@ -33,6 +33,7 @@ export class ProductsService {
   async findOne(id: string) {
     const product = await this.productRepository.findOne({
       where: { productId: id },
+      relations: { provider: true },
     })
 
     if (!product) {

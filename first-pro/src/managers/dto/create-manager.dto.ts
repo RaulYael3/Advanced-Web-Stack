@@ -6,8 +6,8 @@ import {
   IsString,
   IsUUID,
   MaxLength,
-} from 'class-validator';
-import { User } from 'src/auth/entities/user.entity';
-import { Manager } from '../entities/manager.entity';
+} from 'class-validator'
+import { User } from 'src/auth/entities/user.entity'
+import { Manager } from '../entities/manager.entity'
 
 export class CreateManagerDto extends Manager {}

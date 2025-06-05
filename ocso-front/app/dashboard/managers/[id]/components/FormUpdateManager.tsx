@@ -25,7 +25,9 @@ export default async function FormUpdateManager({
 			action={updateManagerWithId}
 			className='bg-orange-400 rounded-md flex flex-col flex-grow-0 gap-2'
 		>
-			<h1>Actuazlizar manager</h1>
+			<h1 className='tet-2xl text-white font-semibold text-center'>
+				Actuazlizar manager
+			</h1>
 			<Input
 				isRequired
 				label='ID del manager'

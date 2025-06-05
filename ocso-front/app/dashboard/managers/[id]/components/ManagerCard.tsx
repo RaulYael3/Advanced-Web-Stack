@@ -20,6 +20,9 @@ export default function ManagerCard({ manager }: { manager: Manager }) {
 						Telefono: <b>{manager.managerPhoneNumber}</b>
 					</p>
 					<p>
+						Sueldo: <b>${manager.managerSalary.toFixed(2)}</b>
+					</p>
+					<p>
 						Tienda:
 						<Link
 							href={{

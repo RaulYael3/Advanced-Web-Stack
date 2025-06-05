@@ -30,7 +30,7 @@ export default async function ProductPage({
 		<div className='w-full'>
 			<div className='bg-orange-600'>
 				<h1 className='w-full font-bold text-white text-center text-2xl py-2'>
-					Nombre del producto: {product.productName}
+					Nombre del producto: {product.name}
 				</h1>
 				<h2 className='text-xl font-bold text-white text-center'>
 					Precio: {product.price}

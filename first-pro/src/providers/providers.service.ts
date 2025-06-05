@@ -19,7 +19,11 @@ export class ProvidersService {
   }
 
   findAll() {
-    return this.providerRepository.find()
+    return this.providerRepository.find({
+      relations: {
+        products: true,
+      },
+    })
   }
 
   async findOne(id: string) {

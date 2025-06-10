@@ -43,7 +43,7 @@ export class CreateEmployeeDto {
 
   @ApiPropertyOptional()
   @IsOptional()
-  emplyeePhoto: string
+  employeePhoto: string
 
   @ApiProperty()
   @IsNumber()

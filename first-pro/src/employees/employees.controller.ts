@@ -31,6 +31,7 @@ export class EmployeesController {
 
   @Auth(ROLES.MANAGER)
   @Post()
+  @UseInterceptors(FileInterceptor('employeePhoto'))
   @ApiResponse({
     status: 201,
     example: {
@@ -50,8 +51,17 @@ export class EmployeesController {
     status: 403,
     description: 'Missing role',
   })
-  create(@Body() createEmployeeDto: CreateEmployeeDto) {
-    return this.employeesService.create(createEmployeeDto)
+  async create(
+    @Body() createEmployeeDto: CreateEmployeeDto,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    if (!file) {
+      return this.employeesService.create(createEmployeeDto)
+    } else {
+      const photoUrl = await this.awsService.uploadFile(file)
+      createEmployeeDto.employeePhoto = photoUrl
+      return this.employeesService.create(createEmployeeDto)
+    }
   }
 
   @Auth(ROLES.EMPLOYEE, ROLES.MANAGER)
@@ -63,7 +73,7 @@ export class EmployeesController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     const fileUrl = await this.awsService.uploadFile(file)
-    updateEmployeeDto.emplyeePhoto = fileUrl
+    updateEmployeeDto.employeePhoto = fileUrl
     return this.employeesService.update(id, updateEmployeeDto)
   }
 

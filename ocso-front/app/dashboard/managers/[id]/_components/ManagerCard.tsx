@@ -1,38 +1,53 @@
+import { Card, CardHeader, Divider, CardBody } from '@heroui/react'
 import { Manager } from '@/entities'
-import { Card, CardBody, CardHeader, Divider } from '@heroui/react'
 import Link from 'next/link'
-
+import ModalGeneric from '@/app/dashboard/_components/ModalGeneric'
+import FormUpdateUser from './FormUpdateUser'
+import { LuPlus } from 'react-icons/lu'
+import FormCreateUserManager from './FormCreateUser'
 export default function ManagerCard({ manager }: { manager: Manager }) {
+	console.log(manager)
 	return (
-		<Card className='mx-20 py- text-center'>
+		<Card className='mx-20 py-2 text-center'>
 			<CardHeader>
 				<p className='w-full'>
-					<b className='text-3xl'>{manager.managerFullName}</b>
+					<b className='text-4xl'>{manager.managerFullName}</b>
 				</p>
+				{manager.user ? (
+					<ModalGeneric icon={<LuPlus size='20' />}>
+						<FormUpdateUser user={manager.user} />
+					</ModalGeneric>
+				) : (
+					<ModalGeneric icon={<LuPlus size='20' />}>
+						<FormCreateUserManager manager={manager} />
+					</ModalGeneric>
+				)}
 			</CardHeader>
 			<Divider />
-			<CardBody className='flex flex-row flex-grow-0 items-center justify-center'>
-				<div className='flex flex-col w-full'>
+			<CardBody className='flex flex-row flex-grow-0 items-center gap-10 justify-center'>
+				<div className='flex flex-col text-lg'>
 					<p className='w-full'>
 						Email: <b>{manager.managerEmail}</b>
 					</p>
 					<p className='w-full'>
-						Telefono: <b>{manager.managerPhoneNumber}</b>
+						Teléfono: <b>{manager.managerPhoneNumber}</b>
 					</p>
-					<p>
-						Sueldo: <b>${manager.managerSalary.toFixed(2)}</b>
+					<p className='w-full'>
+						Salario: <b>{manager.managerSalary}</b>
 					</p>
-					<p>
-						Tienda:
+					<p className={manager.location ? '' : 'hidden'}>
+						Tienda:{' '}
 						<Link
 							href={{
 								pathname: `/dashboard`,
 								query: {
-									store: manager.location?.locationId,
+									store: manager?.location?.locationId,
 								},
 							}}
 						>
-							{manager.location?.locationName}
+							<b className='underline'>
+								{manager?.location?.locationName}
+							</b>
 						</Link>
 					</p>
 				</div>
@@ -42,11 +57,11 @@ export default function ManagerCard({ manager }: { manager: Manager }) {
 							className='border-2 border-orange-800 rounded-md my-2'
 							width='300'
 							height='200'
-							src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyAz0Y6dhhUVleZmt7-H4PO1QQWCSEz3LBg&q=${manager.location?.locationLatLng[0]},${manager.location.locationLatLng[1]}`}
+							src={`https://www.google.com/maps/embed/v1/place?key=AIzaSyAz0Y6dhhUVleZmt7-H4PO1QQWCSEz3LBg&q=${manager.location.locationLatLng[0]},${manager.location.locationLatLng[1]}`}
 						></iframe>
 					</>
 				) : (
-					<p className='w-full'>No tiene tienda asignada</p>
+					<p className='w-full text-4xl'> No tiene tienda </p>
 				)}
 			</CardBody>
 		</Card>

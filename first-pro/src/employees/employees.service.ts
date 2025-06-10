@@ -19,7 +19,9 @@ export class EmployeesService {
   }
 
   findAll() {
-    return this.employeesRepository.find()
+    return this.employeesRepository.find({
+      relations: { employeeLocation: true },
+    })
   }
 
   findByLocation(id: number) {

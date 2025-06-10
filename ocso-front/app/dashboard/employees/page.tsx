@@ -3,7 +3,7 @@ import { Employee, Location } from '@/entities'
 import { authHeaders } from '@/helpers/authHeaders'
 import CreateEmployee from './_components/CreateEmployee'
 import FormCreateEmployee from './_components/FormCreateEmployee'
-import ListEmployees from './_components/ListEmployees'
+import ListEmployees from './_components/ListEmployee'
 import { LuPlus } from 'react-icons/lu'
 
 const EmployeesPage = async () => {

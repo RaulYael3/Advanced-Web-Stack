@@ -106,7 +106,7 @@ export class EmployeesController {
     @Body() updateEmployeeDto: UpdateEmployeeDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    if (!file) {
+    if (file.originalname === 'undefined') {
       return this.employeesService.update(id, updateEmployeeDto)
     } else {
       const fileUrl = await this.awsService.uploadFile(file)

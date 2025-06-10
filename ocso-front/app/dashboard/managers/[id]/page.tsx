@@ -2,10 +2,10 @@ import { API_URL } from '@/constants'
 import { Manager } from '@/entities'
 import { authHeaders } from '@/helpers/authHeaders'
 import { Card, CardBody, CardHeader, Divider } from '@heroui/react'
-import ManagerCard from './components/ManagerCard'
-import DeleteManager from './components/DeleteManagerButton'
-import UpdateManager from './components/UpdateManager'
-import FormUpdateManager from './components/FormUpdateManager'
+import ManagerCard from './_components/ManagerCard'
+import DeleteManager from './_components/DeleteManagerButton'
+import UpdateManager from './_components/UpdateManager'
+import FormUpdateManager from './_components/FormUpdateManager'
 
 export default async function ManagerPage({
 	params,

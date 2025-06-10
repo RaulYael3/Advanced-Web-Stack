@@ -39,7 +39,7 @@ export class EmployeesController {
       employeeLastName: 'Perez Duarde',
       employeeEmail: 'raul@gmail.com',
       employeePhoneNumber: '443 590 1249',
-      employeePhotoUrl: 'URL',
+      employeePhoto: 'URL',
     },
   })
   @ApiResponse({
@@ -55,18 +55,16 @@ export class EmployeesController {
   }
 
   @Auth(ROLES.EMPLOYEE, ROLES.MANAGER)
-  @Post(':id/upload')
-  @UseInterceptors(
-    FileInterceptor('file', { dest: './src/employees/employees-photos' }),
-  )
+  @Patch(':id/upload')
+  @UseInterceptors(FileInterceptor('employeePhoto'))
   async uploadPhoto(
     @Param('id') id: string,
+    @Body() updateEmployeeDto: UpdateEmployeeDto,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    const response = await this.awsService.uploadFile(file)
-    return this.employeesService.update(id, {
-      emplyeePhoto: response,
-    })
+    const fileUrl = await this.awsService.uploadFile(file)
+    updateEmployeeDto.emplyeePhoto = fileUrl
+    return this.employeesService.update(id, updateEmployeeDto)
   }
 
   @Auth(ROLES.MANAGER)

@@ -11,7 +11,7 @@ export const ApiAuth = () => {
         employeeLastName: 'Perez Duarde',
         employeeEmail: 'raul@gmail.com',
         employeePhoneNumber: '443 590 1249',
-        employeePhotoUrl: 'URL',
+        employeePhoto: 'URL',
       },
     }),
     ApiResponse({

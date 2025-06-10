@@ -29,7 +29,7 @@ export class Employee {
   employeeEmail: string
 
   @Column({ type: 'text', nullable: true })
-  employeePhotoUrl: string
+  employeePhoto: string
 
   @ManyToOne(() => Location, (location) => location.employee)
   @JoinColumn({

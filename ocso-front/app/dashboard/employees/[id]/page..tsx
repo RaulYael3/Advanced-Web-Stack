@@ -11,7 +11,7 @@ export default async function EmployeePage({
 }) {
 	const responseEmployee = await fetch(`${API_URL}/employees/${params.id}`, {
 		headers: {
-			...authHeaders(),
+			...(await authHeaders()),
 		},
 	})
 	const employee: Employee = await responseEmployee.json()

@@ -1,38 +1,65 @@
-import { Controller, Post, Body, Param, Put, Res } from '@nestjs/common'
+import {
+  Controller,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Res,
+  BadRequestException,
+  Query,
+} from '@nestjs/common'
 import { AuthService } from './auth.service'
 import { CreateUserDto } from './dto/create-user.dto'
-import { LogionUserDto } from './dto/logoin-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
-import { Response } from 'express'
-import { TOKEN_NAME } from './constants/constants'
-import { Cookies } from './decorators/cookies.decorators'
 
+import { ApiTags } from '@nestjs/swagger'
+
+import { Response } from 'express'
+import { LogionUserDto } from './dto/logoin-user.dto'
+// import { Cookies } from './decorators/cookies.decorators'
+import { TOKEN_NAME } from './constants/constants'
+
+@ApiTags('Auth')
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
-  @Post('singup')
-  async singup(@Body() createAuthDto: CreateUserDto) {
-    return await this.authService.registerUser(createAuthDto)
+  @Post('register/:id')
+  registerManager(
+    @Query('role') role: string,
+    @Body() createUserDto: CreateUserDto,
+    @Param('id') id: string,
+  ) {
+    if (role === 'manager') {
+      return this.authService.registerManager(id, createUserDto)
+    } else if (role === 'employee') {
+      return this.authService.registerEmployee(id, createUserDto)
+    }
+    throw new BadRequestException('Rol inválido')
   }
 
   @Post('login')
   async login(
-    @Body() loginUser: LogionUserDto,
+    @Body() loginUserDto: LogionUserDto,
     @Res({ passthrough: true }) response: Response,
-    @Cookies() cookies: any,
+    // @Cookies() cookies: any,
   ) {
-    const token = await this.authService.loginUser(loginUser)
+    const token = await this.authService.loginUser(loginUserDto)
+    const expireDate = new Date()
+    expireDate.setDate(expireDate.getDay() + 7)
     response.cookie(TOKEN_NAME, token, {
-      httpOnly: false,
+      httpOnly: true,
       secure: true,
+      sameSite: 'none',
+      domain: process.env.cookiesDomain,
+      expires: expireDate,
       maxAge: 1000 * 60 * 60 * 24 * 7,
     })
+    return
   }
-
-  @Put('/:email')
+  @Patch('/:id')
   updateUser(
-    @Param('email') userEmail: string,
+    @Param('id') userEmail: string,
     @Body() updateUserDto: UpdateUserDto,
   ) {
     return this.authService.updateUser(userEmail, updateUserDto)

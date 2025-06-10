@@ -14,6 +14,7 @@
     "@heroui/system": "^2.4.12",
     "@heroui/theme": "^2.4.12",
     "framer-motion": "^12.5.0",
+    "generate-password": "^1.7.1",
     "next": "^15.2.3",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",

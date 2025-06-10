@@ -99,12 +99,20 @@ export class EmployeesController {
   }
 
   @Auth(ROLES.EMPLOYEE)
+  @UseInterceptors(FileInterceptor('employeePhoto'))
   @Patch(':id')
-  update(
+  async update(
     @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
     @Body() updateEmployeeDto: UpdateEmployeeDto,
+    @UploadedFile() file: Express.Multer.File,
   ) {
-    return this.employeesService.update(id, updateEmployeeDto)
+    if (!file) {
+      return this.employeesService.update(id, updateEmployeeDto)
+    } else {
+      const fileUrl = await this.awsService.uploadFile(file)
+      updateEmployeeDto.employeePhoto = fileUrl
+      return this.employeesService.update(id, updateEmployeeDto)
+    }
   }
 
   @Auth(ROLES.MANAGER)

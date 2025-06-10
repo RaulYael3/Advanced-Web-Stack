@@ -2,7 +2,6 @@ import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 import {
   IsEmail,
   IsNumber,
-  IsObject,
   IsOptional,
   IsString,
   IsUUID,
@@ -56,6 +55,6 @@ export class CreateEmployeeDto {
 
   @ApiProperty()
   @IsOptional()
-  @IsObject()
-  location: LocationEmployeeDto
+  @IsString()
+  location: LocationEmployeeDto | string
 }

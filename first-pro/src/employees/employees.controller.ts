@@ -55,13 +55,18 @@ export class EmployeesController {
   }
 
   @Auth(ROLES.EMPLOYEE, ROLES.MANAGER)
-  @Post('upload')
+  @Post(':id/upload')
   @UseInterceptors(
     FileInterceptor('file', { dest: './src/employees/employees-photos' }),
   )
-  uploadPhoto(@UploadedFile() file: Express.Multer.File) {
-    console.log(file)
-    return this.awsService.uploadFile(file)
+  async uploadPhoto(
+    @Param('id') id: string,
+    @UploadedFile() file: Express.Multer.File,
+  ) {
+    const response = await this.awsService.uploadFile(file)
+    return this.employeesService.update(id, {
+      emplyeePhoto: response,
+    })
   }
 
   @Auth(ROLES.MANAGER)

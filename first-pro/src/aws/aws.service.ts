@@ -13,12 +13,14 @@ export class AwsService {
 
   async uploadFile(file: Express.Multer.File) {
     const key = file.originalname
+    const url = `https://nest-ocso-test.s3.amazonaws.com/${key}`
     const bucket = 'nest-ocso-test'
     const command = new PutObjectCommand({
       Key: key,
       Body: file.buffer,
       Bucket: bucket,
     })
-    return await this.s3.send(command)
+    await this.s3.send(command)
+    return url
   }
 }

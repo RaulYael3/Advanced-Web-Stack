@@ -11,13 +11,11 @@ import {
 import { AuthService } from './auth.service'
 import { CreateUserDto } from './dto/create-user.dto'
 import { UpdateUserDto } from './dto/update-user.dto'
-
-import { ApiTags } from '@nestjs/swagger'
-
-import { Response } from 'express'
 import { LoginUserDto } from './dto/login-user.dto'
-// import { Cookies } from './decorators/cookies.decorators'
+import { ApiTags } from '@nestjs/swagger'
 import { TOKEN_NAME } from './constants/constants'
+import { Response } from 'express'
+import { Cookies } from './decorators/cookies.decorators'
 
 @ApiTags('Auth')
 @Controller('auth')
@@ -42,7 +40,7 @@ export class AuthController {
   async login(
     @Body() loginUserDto: LoginUserDto,
     @Res({ passthrough: true }) response: Response,
-    // @Cookies() cookies: any,
+    @Cookies() cookies: any,
   ) {
     const token = await this.authService.loginUser(loginUserDto)
     const expireDate = new Date()
@@ -51,11 +49,11 @@ export class AuthController {
       httpOnly: true,
       secure: true,
       sameSite: 'none',
-      // domain: process.env.cookiesDomain,
+      domain: process.env.cookiesDomain,
       expires: expireDate,
       maxAge: 1000 * 60 * 60 * 24 * 7,
     })
-    return token
+    return
   }
   @Patch('/:id')
   updateUser(

@@ -49,14 +49,13 @@ export class AuthController {
     expireDate.setDate(expireDate.getDay() + 7)
     response.cookie(TOKEN_NAME, token, {
       httpOnly: true,
-      // secure: 'production',
+      secure: true,
       sameSite: 'none',
       // domain: process.env.cookiesDomain,
       expires: expireDate,
       maxAge: 1000 * 60 * 60 * 24 * 7,
     })
-    console.log('Token de sesión:', token)
-    return { meesage: 'succes' }
+    return token
   }
   @Patch('/:id')
   updateUser(

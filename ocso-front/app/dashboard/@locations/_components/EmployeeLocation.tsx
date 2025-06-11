@@ -8,6 +8,7 @@ export default async function EmployeeLocation({
 }: {
 	store: string | string[] | undefined
 }) {
+	console.log('Store:', store)
 	const response = await fetch(`${API_URL}/employees/location/${store}`, {
 		method: 'GET',
 		headers: { ...(await authHeaders()) },

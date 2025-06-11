@@ -48,8 +48,6 @@ export class AuthController {
     response.cookie(TOKEN_NAME, token, {
       httpOnly: true,
       secure: true,
-      sameSite: 'none',
-      domain: process.env.cookiesDomain,
       expires: expireDate,
       maxAge: 1000 * 60 * 60 * 24 * 7,
     })

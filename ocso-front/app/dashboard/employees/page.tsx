@@ -1,6 +1,6 @@
 import { API_URL } from '@/constants'
 import { Employee, Location } from '@/entities'
-import { authHeaders } from '@/helpers/authHeaders'
+import { authHeaders } from '@/app/dashboard/helpers/authHeaders'
 import CreateEmployee from './_components/CreateEmployee'
 import FormCreateEmployee from './_components/FormCreateEmployee'
 import ListEmployees from './_components/ListEmployee'

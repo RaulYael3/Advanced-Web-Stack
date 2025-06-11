@@ -2,7 +2,7 @@ import { Employee, Location } from '@/entities'
 import { Button, Input } from '@heroui/react'
 import SelectLocations from '../../_components/SelectLocation'
 import { API_URL } from '@/constants'
-import { authHeaders } from '@/helpers/authHeaders'
+import { authHeaders } from '@/app/dashboard/helpers/authHeaders'
 import updateEmployee from '@/actions/employees/update'
 export default async function FormUpdateEmployee({
 	employee,

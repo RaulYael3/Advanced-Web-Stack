@@ -1,7 +1,7 @@
 import { Input } from '@heroui/react'
 import { API_URL } from '@/constants'
 import SelectManager from './SelectManager'
-import { authHeaders } from '@/helpers/authHeaders'
+import { authHeaders } from '@/app/dashboard/helpers/authHeaders'
 import { Location, Manager } from '@/entities'
 import { updateLocation } from '@/actions/locations/update'
 

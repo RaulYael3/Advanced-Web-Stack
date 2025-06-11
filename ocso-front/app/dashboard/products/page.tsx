@@ -1,6 +1,6 @@
 import createProduct from '@/actions/products/create'
 import { API_URL } from '@/constants'
-import { authHeaders } from '@/helpers/authHeaders'
+import { authHeaders } from '@/app/dashboard/helpers/authHeaders'
 import { Input, Button } from '@heroui/react'
 import { LuDollarSign } from 'react-icons/lu'
 import SelectProvider from './_components/SelectProvider'

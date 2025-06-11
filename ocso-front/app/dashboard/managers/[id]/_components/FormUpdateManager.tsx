@@ -1,7 +1,7 @@
 import updateManager from '@/actions/managers/update'
 import { API_URL } from '@/constants'
 import { Manager } from '@/entities'
-import { authHeaders } from '@/helpers/authHeaders'
+import { authHeaders } from '@/app/dashboard/helpers/authHeaders'
 import { Button, Input } from '@heroui/react'
 import SelectStore from './SelectStore'
 

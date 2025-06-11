@@ -1,6 +1,6 @@
 import { API_URL } from '@/constants'
 import { Product } from '@/entities'
-import { authHeaders } from '@/helpers/authHeaders'
+import { authHeaders } from '@/app/dashboard/helpers/authHeaders'
 import FilteredCards from './_components/FilteredCards'
 import { ReactNode } from 'react'
 const LayoutProducts = async ({ children }: { children: ReactNode }) => {

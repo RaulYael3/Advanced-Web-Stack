@@ -1,7 +1,7 @@
 "usu server"
 
 import { API_URL } from "@/constants"
-import { authHeaders } from "@/helpers/authHeaders"
+import { authHeaders } from "@/app/dashboard/helpers/authHeaders"
 import { revalidateTag } from "next/cache"
 import { redirect } from "next/navigation"
 

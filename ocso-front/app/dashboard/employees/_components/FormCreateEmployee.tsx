@@ -1,7 +1,7 @@
 import { Button, Input } from '@heroui/react'
 import createEmployee from '@/actions/employees/create'
 import { API_URL } from '@/constants'
-import { authHeaders } from '@/helpers/authHeaders'
+import { authHeaders } from '@/app/dashboard/helpers/authHeaders'
 import SelectLocations from './SelectLocation'
 export default async function FormCreateEmployee() {
 	const responseLocations = await fetch(`${API_URL}/locations`, {

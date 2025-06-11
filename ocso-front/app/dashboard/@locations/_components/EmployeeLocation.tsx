@@ -1,6 +1,6 @@
 import { API_URL } from '@/constants'
 import { Employee } from '@/entities'
-import { authHeaders } from '@/helpers/authHeaders'
+import { authHeaders } from '@/app/dashboard/helpers/authHeaders'
 import { Card, CardBody, CardHeader, Divider } from '@heroui/react'
 
 export default async function EmployeeLocation({

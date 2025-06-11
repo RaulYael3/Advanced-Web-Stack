@@ -1,4 +1,3 @@
-'use client'
 import ManagersCard from './_components/MaanagersCard'
 
 export default function LayoutManagers({

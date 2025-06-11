@@ -1,7 +1,7 @@
 import { Location } from '@/entities'
 
 import { API_URL } from '@/constants'
-import { authHeaders } from '@/helpers/authHeaders'
+import { authHeaders } from '@/app/dashboard/helpers/authHeaders'
 import Link from 'next/link'
 import { Card, CardBody, CardHeader, Divider } from '@heroui/react'
 export default async function LocationCard({

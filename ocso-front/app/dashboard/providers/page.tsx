@@ -1,5 +1,5 @@
 import { API_URL } from '@/constants'
-import { authHeaders } from '@/helpers/authHeaders'
+import { authHeaders } from '@/app/dashboard/helpers/authHeaders'
 import ProviderCard from './_components/ProviderCard'
 import { Provider } from '@/entities'
 import Link from 'next/link'
@@ -11,6 +11,7 @@ export default async function ProviderPage() {
 		headers: {
 			...(await authHeaders()),
 		},
+		credentials: 'include',
 	})
 	const providers: Provider[] = await response.json()
 	console.log('Providers:', providers)

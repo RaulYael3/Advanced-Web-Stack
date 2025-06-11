@@ -13,10 +13,9 @@ export default function ListEmployees({
 	locations: Location[]
 }) {
 	const [filter, setFilter] = useState<string>('')
-	console.log(locations)
 	return (
 		<div className=''>
-			{location && (
+			{locations && (
 				<Select
 					label='Tiendas'
 					defaultSelectedKeys={[]}

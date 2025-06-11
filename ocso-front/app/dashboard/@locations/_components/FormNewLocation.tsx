@@ -2,7 +2,7 @@ import { Input } from '@heroui/react'
 import { createLocation } from '@/actions/locations/create'
 import { API_URL } from '@/constants'
 import SelectManager from './SelectManager'
-import { authHeaders } from '@/helpers/authHeaders'
+import { authHeaders } from '@/app/dashboard/helpers/authHeaders'
 import { Manager } from '@/entities'
 
 export default async function FormNewLocation({

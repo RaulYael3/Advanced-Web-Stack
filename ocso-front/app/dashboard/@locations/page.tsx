@@ -2,7 +2,7 @@ import { API_URL } from '@/constants'
 import { Location } from '@/entities'
 import SelectLocation from './_components/SelectLocation'
 import FormNewLocation from './_components/FormNewLocation'
-import { authHeaders } from '@/helpers/authHeaders'
+import { authHeaders } from '@/app/dashboard/helpers/authHeaders'
 import UpdateLocation from './_components/UpdateLocation'
 
 const LocationPage = async ({

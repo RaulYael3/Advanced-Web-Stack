@@ -2,7 +2,7 @@
 
 import { API_URL, TOKEN_NAME } from "@/constants"
 import { Location } from "@/entities"
-import { authHeaders } from "@/helpers/authHeaders"
+import { authHeaders } from "@/app/dashboard/helpers/authHeaders"
 import { revalidateTag } from "next/cache"
 import { redirect } from "next/navigation"
 import { cookies } from "next/headers"

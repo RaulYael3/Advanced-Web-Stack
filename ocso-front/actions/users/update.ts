@@ -1,6 +1,6 @@
 "use server";
 import { API_URL } from "@/constants"
-import { authHeaders } from "@/helpers/authHeaders"
+import { authHeaders } from "@/app/dashboard/helpers/authHeaders"
 
 export default async function updateUser(userId: string, formData: FormData) {
     let data:any = {}

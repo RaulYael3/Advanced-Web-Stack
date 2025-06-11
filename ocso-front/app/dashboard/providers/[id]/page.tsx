@@ -1,5 +1,5 @@
 import { API_URL } from '@/constants'
-import { authHeaders } from '@/helpers/authHeaders'
+import { authHeaders } from '@/app/dashboard/helpers/authHeaders'
 import ProviderCard from '../_components/ProviderCard'
 import { Product, Provider } from '@/entities'
 import ProductCard from './_components/ProductCard'

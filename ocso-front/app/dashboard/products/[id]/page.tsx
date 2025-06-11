@@ -1,6 +1,6 @@
 import { API_URL } from '@/constants'
 import ProductCard from '../_components/ProductCard'
-import { authHeaders } from '@/helpers/authHeaders'
+import { authHeaders } from '@/app/dashboard/helpers/authHeaders'
 import { Product, Provider } from '@/entities'
 import UpdateProduct from './_components/UpdateProduct'
 import DeleteProduct from './_components/DeleteProduct'

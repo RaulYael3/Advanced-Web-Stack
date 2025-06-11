@@ -15,7 +15,7 @@ import { UpdateUserDto } from './dto/update-user.dto'
 import { ApiTags } from '@nestjs/swagger'
 
 import { Response } from 'express'
-import { LogionUserDto } from './dto/logoin-user.dto'
+import { LoginUserDto } from './dto/login-user.dto'
 // import { Cookies } from './decorators/cookies.decorators'
 import { TOKEN_NAME } from './constants/constants'
 
@@ -40,7 +40,7 @@ export class AuthController {
 
   @Post('login')
   async login(
-    @Body() loginUserDto: LogionUserDto,
+    @Body() loginUserDto: LoginUserDto,
     @Res({ passthrough: true }) response: Response,
     // @Cookies() cookies: any,
   ) {

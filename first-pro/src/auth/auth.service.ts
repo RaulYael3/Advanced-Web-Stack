@@ -13,7 +13,7 @@ import * as bcrypt from 'bcrypt'
 import { UpdateUserDto } from './dto/update-user.dto'
 import { Employee } from 'src/employees/entities/employee.entity'
 import { Manager } from 'src/managers/entities/manager.entity'
-import { LogionUserDto } from './dto/logoin-user.dto'
+import { LoginUserDto } from './dto/login-user.dto'
 @Injectable()
 export class AuthService {
   constructor(
@@ -58,18 +58,16 @@ export class AuthService {
     return this.managerRepository.save(manager)
   }
 
-  async loginUser(loginUserDto: LogionUserDto) {
+  async loginUser(loginUserDto: LoginUserDto) {
     const user = await this.userRepository.findOne({
       where: {
         userEmail: loginUserDto.userEmail,
       },
     })
-    if (!user) throw new UnauthorizedException('No estas autorizado')
-    const match = await bcrypt.compare(
-      loginUserDto.userPassword,
-      user.userPassword,
-    )
-    if (!match) throw new UnauthorizedException('No estas autorizado')
+
+    if (user?.userId === null || user?.userId === undefined)
+      throw new UnauthorizedException('No estas autorizado')
+
     const payload = {
       userEmail: user.userEmail,
       userPassword: user.userPassword,

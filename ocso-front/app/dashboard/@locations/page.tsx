@@ -10,6 +10,7 @@ const LocationPage = async ({
 }: {
 	searchParams: { [key: string]: string | string[] | undefined }
 }) => {
+	const store = await searchParams.store
 	const response = await fetch(`${API_URL}/locations`, {
 		headers: { ...(await authHeaders()) },
 	})
@@ -19,16 +20,13 @@ const LocationPage = async ({
 		<div className='w-5/12 h-[90vh] flex flex-col items-center'>
 			<div className='w-full'>
 				<div className='mx-10 w-1/2 my-10'>
-					<SelectLocation
-						location={data}
-						store={searchParams.store}
-					/>
+					<SelectLocation location={data} store={store} />
 				</div>
 				<div className='w-6/12'>
-					<FormNewLocation searchParams={searchParams} />
+					<FormNewLocation searchParams={{ store }} />
 				</div>
-				<UpdateLocation store={searchParams.store}>
-					<FormNewLocation searchParams={searchParams} />
+				<UpdateLocation store={store!}>
+					<FormNewLocation searchParams={{ store }} />
 				</UpdateLocation>
 			</div>
 		</div>

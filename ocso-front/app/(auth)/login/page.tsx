@@ -15,7 +15,6 @@ export default function LoginPage() {
 		let authData: any = {}
 		authData.userEmail = formData.get('userEmail')
 		authData.userPassword = formData.get('userPassword')
-		console.log('Datos de autenticación:', authData)
 		try {
 			const response = await fetch(`${API_URL}/auth/login`, {
 				method: 'POST',

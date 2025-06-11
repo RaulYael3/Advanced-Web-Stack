@@ -16,13 +16,14 @@ export default function SelectProvider({
 			label='Proveedor'
 			name='provider'
 		>
-			{providers.map((provider) => {
-				return (
-					<SelectItem key={provider.providerId}>
-						{provider.providerName}
-					</SelectItem>
-				)
-			})}
+			{providers.length > 0 &&
+				providers?.map((provider) => {
+					return (
+						<SelectItem key={provider.providerId}>
+							{provider.providerName}
+						</SelectItem>
+					)
+				})}
 		</Select>
 	)
 }

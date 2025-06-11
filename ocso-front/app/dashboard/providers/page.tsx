@@ -13,6 +13,7 @@ export default async function ProviderPage() {
 		},
 	})
 	const providers: Provider[] = await response.json()
+	console.log('Providers:', providers)
 
 	return (
 		<div className='flex flex-col h-[90vh] w-full items-end px-10'>

@@ -4,9 +4,8 @@ import { cache } from "react"
 
 export const authHeaders = cache( async () => {
     const token = (await cookies()).get(TOKEN_NAME)?.value
-    console.log('Token de sesión:', token)
-
+    
     return{
-        Authorization: `Bearer ${token}`
+        'Authorization': `Bearer ${token}`
     }
 })

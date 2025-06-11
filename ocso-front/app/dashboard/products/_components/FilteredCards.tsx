@@ -6,8 +6,8 @@ import { useEffect, useState } from 'react'
 import { Input, Select, SelectItem } from '@heroui/react'
 
 export default function FilteredCards({
-	products,
-	providers,
+	products = [],
+	providers = [],
 }: {
 	products: Product[]
 	providers: Provider[]
@@ -17,17 +17,33 @@ export default function FilteredCards({
 	const [show, setShow] = useState(false)
 	const [productsList, setProductsList] = useState<Product[]>(products)
 	useEffect(() => {
-		const filteredProducts = products.filter((product) => {
-			if (
-				product.name.toLowerCase().includes(filtered.toLowerCase()) &&
-				product.provider.providerId === provider
-			) {
-				return true
-			} else return false
+		const safeProducts = Array.isArray(products) ? products : []
+
+		if (safeProducts.length === 0) {
+			setProductsList([])
+			setShow(true)
+			return
+		}
+
+		const filteredProducts = safeProducts.filter((product) => {
+			const matchesName = product.name
+				.toLowerCase()
+				.includes(filtered.toLowerCase())
+
+			if (!provider) {
+				return matchesName
+			}
+
+			return matchesName && product.provider.providerId === provider
 		})
+
 		setProductsList(filteredProducts)
 		setShow(true)
 	}, [filtered, provider, products])
+
+	if (!Array.isArray(providers) || !Array.isArray(products)) {
+		return <div>Cargando...</div>
+	}
 	return (
 		<div className='max-h-[90vh] min-h-[90vh] overflow-y-auto flex flex-col gap-4 border-r-orange-400 border-r-2 pt-10 px-10'>
 			<Select
@@ -36,7 +52,7 @@ export default function FilteredCards({
 					setProvider(e.target.value)
 				}}
 			>
-				{providers.map((provider) => (
+				{providers?.map((provider) => (
 					<SelectItem key={provider.providerId}>
 						{provider.providerName}
 					</SelectItem>
@@ -50,7 +66,8 @@ export default function FilteredCards({
 				label='Nombre del producto'
 			/>
 			{show &&
-				productsList.map((product) => {
+				productsList.length > 0 &&
+				productsList?.map((product) => {
 					return (
 						<Link
 							className='hover:scale-110 transition-transform'

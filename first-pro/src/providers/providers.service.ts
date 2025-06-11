@@ -13,9 +13,7 @@ export class ProvidersService {
   ) {}
 
   create(createProviderDto: CreateProviderDto) {
-    const provider = this.providerRepository.create(createProviderDto)
-    const savedProvider = this.providerRepository.save(provider)
-    return savedProvider
+    return this.providerRepository.save(createProviderDto)
   }
 
   findAll() {
@@ -26,16 +24,19 @@ export class ProvidersService {
     })
   }
 
-  async findOne(id: string) {
-    const provider = await this.providerRepository.findOneBy({
-      providerId: id,
+  findOne(id: string) {
+    return this.providerRepository.findOne({
+      where: {
+        providerId: id,
+      },
+      relations: {
+        products: true,
+      },
     })
-    if (!provider) throw new NotFoundException()
-    return provider
   }
 
   async findByName(name: string) {
-    const provider = await this.providerRepository.findOneBy({
+    const provider = await this.providerRepository.findBy({
       providerName: Like(`%${name}%`),
     })
     if (!provider) throw new NotFoundException()
@@ -43,16 +44,19 @@ export class ProvidersService {
   }
 
   async update(id: string, updateProviderDto: UpdateProviderDto) {
-    const providertoUpdate = await this.providerRepository.preload({
+    const product = await this.providerRepository.preload({
       providerId: id,
       ...updateProviderDto,
     })
-    if (!providertoUpdate) throw new NotFoundException()
-    await this.providerRepository.save(providertoUpdate)
-    return providertoUpdate
+    return this.providerRepository.save(product!)
   }
 
   async remove(id: string) {
-    return this.providerRepository.delete({ providerId: id })
+    await this.providerRepository.delete({
+      providerId: id,
+    })
+    return {
+      message: 'Provider deleted',
+    }
   }
 }

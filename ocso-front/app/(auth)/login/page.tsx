@@ -1,78 +1,70 @@
 'use client'
+import Link from 'next/link'
+import { Input, Button } from '@heroui/react'
 import { API_URL } from '@/constants'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
 
 export default function LoginPage() {
-	const [submiting, setSubmiting] = useState(false)
-
+	const [submitting, setSubmitting] = useState(false)
 	const router = useRouter()
-
-	const handleSubmit = async (e: React.FormEvent) => {
-		setSubmiting(true)
+	const handleSubmit = async (e: any) => {
+		setSubmitting(true)
 		e.preventDefault()
 		const formData = new FormData(e.target)
-		let authData = {}
+		let authData: any = {}
 		authData.userEmail = formData.get('userEmail')
 		authData.userPassword = formData.get('userPassword')
+		console.log('Datos de autenticación:', authData)
 		try {
 			const response = await fetch(`${API_URL}/auth/login`, {
-				body: JSON.stringify(authData),
 				method: 'POST',
+				body: JSON.stringify(authData),
+				headers: {
+					'content-type': 'application/json',
+				},
+				cache: 'no-cache',
 				credentials: 'include',
 			})
-
 			if (response.status === 201) router.push('/dashboard')
-
-			setSubmiting(false)
+			setSubmitting(false)
 		} catch (e) {
-			setSubmiting(false)
+			console.error('Error al iniciar sesión:', e)
+			setSubmitting(false)
 		}
 		return
 	}
-
 	return (
 		<form
-			className='flex items-center justify-center min-h-screen bg-cyan-50'
+			className='bg-orange-500 px-10 py-2 rounded-md'
 			onSubmit={handleSubmit}
 		>
-			{/* Contenedor principal con fondo naranja */}
-			<div className='bg-cyan-700 p-6 rounded-lg w-full max-w-sm'>
-				{/* Título */}
-				<h2 className='text-xl font-bold mb-4 text-white'>
-					Ingresa en la plataforma
-				</h2>
-
-				{/* Campo de Email */}
-				<div className='mb-4 flex flex-col gap-4'>
-					<input
-						type='email'
-						name='userEmail'
-						placeholder='Email'
-						className='w-full px-3 py-2 border border-gray-300 rounded-md outline-none placeholder:text-amber-50/20 text-amber-50'
-					/>
-
-					<input
-						type='password'
-						name='userPassword'
-						placeholder='password'
-						className='w-full px-3 py-2 border border-gray-300 rounded-md outline-none placeholder:text-amber-50/20 text-amber-50'
-					/>
-				</div>
-				{/* Botón de Registrarse */}
-				<button
-					type='submit'
-					disabled={submiting}
-					className='bg-gray-300 text-neutral-800 py-1 px-4 rounded-lg cursor-pointer mt-4 justify-self-center'
-				>
-					Registrarse
-				</button>
-
-				<p className='text-xs pt-4 justify-self-end'>
-					Aun no tienes cuenta?{' '}
-					<a href='/signup' className='text-blue-100 underline'>
+			<p className='text-2xl my-4 text-white'>Iniciar sesión</p>
+			<div className='flex flex-col gap-2 my-4 items-center'>
+				<Input
+					label='Email'
+					name='userEmail'
+					type='email'
+					isRequired={true}
+					size='sm'
+				/>
+				<Input
+					label='Contraseña'
+					name='userPassword'
+					type='password'
+					isRequired={true}
+					size='sm'
+				/>
+			</div>
+			<div className='flex flex-col items-center gap-2'>
+				<Button color='primary' type='submit' disabled={submitting}>
+					{submitting ? 'Enviando...' : 'Iniciar Sesión'}
+				</Button>
+				<p className='text-white'>
+					¿No tienes cuenta?{' '}
+					<Link href='/signup' className='text-red-600 underline'>
 						Registrate
-					</a>
+					</Link>
 				</p>
 			</div>
 		</form>

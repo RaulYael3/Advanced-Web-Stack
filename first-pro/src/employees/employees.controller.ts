@@ -59,7 +59,7 @@ export class EmployeesController {
       return this.employeesService.create(createEmployeeDto)
     } else {
       const photoUrl = await this.awsService.uploadFile(file)
-      createEmployeeDto.employeePhoto = photoUrl
+      createEmployeeDto.emplyeePhoto = photoUrl
       return this.employeesService.create(createEmployeeDto)
     }
   }
@@ -73,7 +73,7 @@ export class EmployeesController {
     @UploadedFile() file: Express.Multer.File,
   ) {
     const fileUrl = await this.awsService.uploadFile(file)
-    updateEmployeeDto.employeePhoto = fileUrl
+    updateEmployeeDto.emplyeePhoto = fileUrl
     return this.employeesService.update(id, updateEmployeeDto)
   }
 
@@ -86,7 +86,7 @@ export class EmployeesController {
   @Auth(ROLES.MANAGER)
   @Get('/location/:id')
   findAllLocation(@Param('id') id: string) {
-    return this.employeesService.findByLocation(+id)
+    return this.employeesService.findByLocation(id)
   }
 
   @Auth(ROLES.MANAGER)
@@ -110,7 +110,7 @@ export class EmployeesController {
       return this.employeesService.update(id, updateEmployeeDto)
     } else {
       const fileUrl = await this.awsService.uploadFile(file)
-      updateEmployeeDto.employeePhoto = fileUrl
+      updateEmployeeDto.emplyeePhoto = fileUrl
       return this.employeesService.update(id, updateEmployeeDto)
     }
   }

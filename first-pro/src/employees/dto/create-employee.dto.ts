@@ -1,60 +1,34 @@
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
-import {
-  IsEmail,
-  IsNumber,
-  IsOptional,
-  IsString,
-  IsUUID,
-  MaxLength,
-} from 'class-validator'
+import { IsEmail, IsOptional, IsString, MaxLength } from 'class-validator'
 import { Location } from 'src/locations/entities/location.entity'
-
-export class LocationEmployeeDto extends Location {
-  @ApiProperty()
-  locationId: number
-
-  @ApiPropertyOptional()
-  declare locationName: string
-
-  @ApiPropertyOptional()
-  declare locationLatLng: number[]
-
-  @ApiPropertyOptional()
-  declare locationAddress: string
-}
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger'
 
 export class CreateEmployeeDto {
   @ApiProperty()
   @IsString()
-  @IsUUID('4')
-  @IsOptional()
-  employeeId?: string
-
-  @ApiProperty()
-  @IsString()
-  @MaxLength(50)
+  @MaxLength(30)
   employeeName: string
 
   @ApiProperty()
   @IsString()
-  @MaxLength(50)
+  @MaxLength(70)
   employeeLastName: string
 
-  @ApiPropertyOptional()
-  @IsOptional()
-  employeePhoto: string
-
   @ApiProperty()
-  @IsNumber()
-  employeePhoneNumber: number
+  @IsString()
+  @MaxLength(10)
+  employeePhoneNumber: string
 
   @ApiProperty()
   @IsString()
   @IsEmail()
   employeeEmail: string
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsOptional()
   @IsString()
-  location: LocationEmployeeDto | string
+  location: Location | string
+
+  @ApiPropertyOptional()
+  @IsOptional()
+  emplyeePhoto: string
 }

@@ -20,22 +20,20 @@ export class EmployeesService {
 
   findAll() {
     return this.employeesRepository.find({
-      relations: { employeeLocation: true, user: true },
+      relations: { location: true },
     })
   }
 
-  findByLocation(id: number) {
+  findByLocation(id: string) {
     return this.employeesRepository.findBy({
-      employeeLocation: {
-        location: id,
-      },
+      location: id,
     })
   }
 
   async findOne(id: string) {
     const employee = await this.employeesRepository.findOne({
       where: { employeeId: id },
-      relations: { employeeLocation: true, user: true },
+      relations: { location: true, user: true },
     })
     if (!employee) throw new NotFoundException()
     return employee

@@ -1,0 +1,35 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_DB: cinerex_db
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    ports:
+      - '5432:5432'
+
+  backend:
+    build: .
+    command: npm run start:dev
+    volumes:
+      - .:/usr/src/app
+    ports:
+      - '4000:4000'
+    depends_on:
+      - postgres
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_USERNAME=postgres
+      - DB_PASSWORD=postgres
+      - DB_NAME=cinerex_db
+      - JWT_SECRET=supersecretkey
+      - JWT_EXPIRES_IN=1d
+
+volumes:
+  pgdata:

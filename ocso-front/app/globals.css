@@ -1,1 +1,11 @@
+/* globals.css */
 @import "tailwindcss";
+
+/* Plugin de HeroUI */
+@plugin './hero.ts';
+
+/* Fuentes de contenido */
+@source './app/**/*.{js,ts,jsx,tsx,mdx}';
+@source './pages/**/*.{js,ts,jsx,tsx,mdx}';
+@source './components/**/*.{js,ts,jsx,tsx,mdx}';
+@source '../node_modules/@heroui/theme/dist/**/*.{js,ts,jsx,tsx}';

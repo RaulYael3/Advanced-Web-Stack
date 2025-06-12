@@ -5,12 +5,14 @@ import { TicketsController } from './tickets.controller';
 import { Ticket } from './entities/ticket.entity';
 import { CustomersModule } from '../customers/customers.module';
 import { SeatsModule } from '../seats/seats.module';
+import { S3Module } from '../s3/s3.module';
 
 @Module({
   imports: [
     TypeOrmModule.forFeature([Ticket]),
     CustomersModule,
-    SeatsModule
+    SeatsModule,
+    S3Module
   ],
   controllers: [TicketsController],
   providers: [TicketsService],

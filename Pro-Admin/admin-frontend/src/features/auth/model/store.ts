@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 import { AuthState, AuthActions } from './types'
+import { authApi } from '../api/auth.api'
 
 const initialState = {
   token: null,
@@ -22,7 +23,7 @@ const initialState = {
 export const useAuthStore = create<AuthState & AuthActions>()(
   devtools(
     persist(
-      (set) => ({
+      (set, get) => ({
         ...initialState,
         setToken: (token) => set({ token }),
         setUser: (user) => set({ user }),
@@ -38,6 +39,19 @@ export const useAuthStore = create<AuthState & AuthActions>()(
           set({
             loginForm: initialState.loginForm,
           }),
+        login: async () => {
+          const { loginForm } = get()
+          set({ isLoading: true, error: null })
+          try {
+            const response = await authApi.login(loginForm)
+            if (response.error) throw new Error(response.error)
+            set({ token: response.token, user: response.user })
+          } catch (error) {
+            set({ error: error instanceof Error ? error.message : 'Error al iniciar sesión' })
+          } finally {
+            set({ isLoading: false })
+          }
+        },
         // Acciones para el formulario de registro
         setRegisterForm: (form) =>
           set((state) => ({
@@ -47,6 +61,27 @@ export const useAuthStore = create<AuthState & AuthActions>()(
           set({
             registerForm: initialState.registerForm,
           }),
+        register: async () => {
+          const { registerForm } = get()
+          if (registerForm.password !== registerForm.confirmPassword) {
+            set({ error: 'Las contraseñas no coinciden' })
+            return
+          }
+          set({ isLoading: true, error: null })
+          try {
+            const response = await authApi.register({
+              name: registerForm.name,
+              email: registerForm.email,
+              password: registerForm.password,
+            })
+            if (response.error) throw new Error(response.error)
+            set({ token: response.token, user: response.user })
+          } catch (error) {
+            set({ error: error instanceof Error ? error.message : 'Error al registrarse' })
+          } finally {
+            set({ isLoading: false })
+          }
+        },
       }),
       {
         name: 'auth-storage',

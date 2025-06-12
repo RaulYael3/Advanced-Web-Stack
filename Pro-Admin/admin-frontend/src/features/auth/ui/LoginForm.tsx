@@ -1,72 +1,53 @@
-import { useRouter } from 'next/navigation'
 import { useAuthStore } from '../model/store'
-import { Button } from '@/shared/ui/Button'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/card'
 
 export const LoginForm = () => {
-  const router = useRouter()
-  const { loginForm, setLoginForm, setToken, setUser, setError, setLoading } = useAuthStore()
+  const { loginForm, setLoginForm, login } = useAuthStore()
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    setLoading(true)
-    setError(null)
-
-    try {
-      const response = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(loginForm),
-      })
-
-      const data = await response.json()
-
-      if (!response.ok) {
-        throw new Error(data.message || 'Error al iniciar sesión')
-      }
-
-      setToken(data.token)
-      setUser(data.user)
-      router.push('/dashboard')
-    } catch (error) {
-      setError(error instanceof Error ? error.message : 'Error al iniciar sesión')
-    } finally {
-      setLoading(false)
-    }
+    login()
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md">
-      <div>
-        <label htmlFor="email" className="block text-sm font-medium text-gray-700">
-          Email
-        </label>
-        <input
-          type="email"
-          id="email"
-          value={loginForm.email}
-          onChange={(e) => setLoginForm({ email: e.target.value })}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
-          required
-        />
-      </div>
-
-      <div>
-        <label htmlFor="password" className="block text-sm font-medium text-gray-700">
-          Contraseña
-        </label>
-        <input
-          type="password"
-          id="password"
-          value={loginForm.password}
-          onChange={(e) => setLoginForm({ password: e.target.value })}
-          className="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-primary focus:ring-primary"
-          required
-        />
-      </div>
-
-      <Button type="submit" className="w-full">
-        Iniciar Sesión
-      </Button>
-    </form>
+    <Card>
+      <CardHeader>
+        <CardTitle>Iniciar Sesión</CardTitle>
+        <CardDescription>Ingresa tus credenciales para acceder al panel</CardDescription>
+      </CardHeader>
+      <form onSubmit={handleSubmit}>
+        <CardContent className="space-y-4">
+          <div className="space-y-2">
+            <Label htmlFor="email">Email</Label>
+            <Input
+              id="email"
+              type="email"
+              placeholder="tu@email.com"
+              value={loginForm.email}
+              onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
+              required
+            />
+          </div>
+          <div className="space-y-2">
+            <Label htmlFor="password">Contraseña</Label>
+            <Input
+              id="password"
+              type="password"
+              value={loginForm.password}
+              onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
+              required
+            />
+          </div>
+        </CardContent>
+        <CardFooter>
+          <Button type="submit" className="w-full">
+            Iniciar Sesión
+          </Button>
+        </CardFooter>
+      </form>
+    </Card>
   )
 } 

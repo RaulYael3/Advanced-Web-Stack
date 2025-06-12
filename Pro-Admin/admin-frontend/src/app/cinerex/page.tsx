@@ -1,43 +1,51 @@
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+
 export default function CinerexPage() {
   return (
-    <div className="space-y-6">
-      <div>
-        <h1 className="text-2xl font-semibold text-gray-900">Cinerex</h1>
-        <p className="mt-1 text-sm text-gray-500">
-          Gestión de contenido y configuración de Cinerex
-        </p>
+    <div className="flex-1 space-y-4 p-8 pt-6">
+      <div className="flex items-center justify-between space-y-2">
+        <h2 className="text-3xl font-bold tracking-tight">Cinerex</h2>
       </div>
-
-      <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
-        {/* Tarjeta de Configuración General */}
-        <div className="bg-white overflow-hidden shadow rounded-lg">
-          <div className="p-5">
-            <h3 className="text-lg font-medium text-gray-900">Configuración General</h3>
-            <p className="mt-1 text-sm text-gray-500">
-              Configura los parámetros generales de la plataforma
+      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+        <Card>
+          <CardHeader>
+            <CardTitle>Configuración General</CardTitle>
+            <CardDescription>
+              Configura los aspectos generales de Cinerex
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              Aquí podrás configurar aspectos como el nombre del cine, horarios, precios y más.
             </p>
-          </div>
-        </div>
-
-        {/* Tarjeta de Gestión de Contenido */}
-        <div className="bg-white overflow-hidden shadow rounded-lg">
-          <div className="p-5">
-            <h3 className="text-lg font-medium text-gray-900">Gestión de Contenido</h3>
-            <p className="mt-1 text-sm text-gray-500">
-              Administra el contenido de la plataforma
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Gestión de Contenido</CardTitle>
+            <CardDescription>
+              Administra el contenido de Cinerex
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              Gestiona las películas, salas, funciones y promociones.
             </p>
-          </div>
-        </div>
-
-        {/* Tarjeta de Estadísticas */}
-        <div className="bg-white overflow-hidden shadow rounded-lg">
-          <div className="p-5">
-            <h3 className="text-lg font-medium text-gray-900">Estadísticas</h3>
-            <p className="mt-1 text-sm text-gray-500">
-              Visualiza las estadísticas de la plataforma
+          </CardContent>
+        </Card>
+        <Card>
+          <CardHeader>
+            <CardTitle>Estadísticas</CardTitle>
+            <CardDescription>
+              Visualiza las estadísticas de Cinerex
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <p className="text-sm text-muted-foreground">
+              Revisa las estadísticas de ventas, asistencia y más.
             </p>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       </div>
     </div>
   )

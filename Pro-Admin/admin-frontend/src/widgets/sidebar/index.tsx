@@ -1,6 +1,10 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { cn } from '@/shared/lib/utils'
+import { cn } from '@/lib/utils'
+import { Button } from '@/components/ui/button'
+import { ScrollArea } from '@/components/ui/scroll-area'
+import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import { Menu } from 'lucide-react'
 
 const navigation = [
   { name: 'Dashboard', href: '/dashboard' },
@@ -14,29 +18,57 @@ export const Sidebar = () => {
   const pathname = usePathname()
 
   return (
-    <div className="hidden md:flex md:flex-shrink-0">
-      <div className="flex flex-col w-64">
-        <div className="flex flex-col h-0 flex-1 bg-white border-r border-gray-200">
-          <div className="flex-1 flex flex-col pt-5 pb-4 overflow-y-auto">
-            <nav className="mt-5 flex-1 px-2 space-y-1">
+    <>
+      {/* Mobile Sidebar */}
+      <Sheet>
+        <SheetTrigger asChild>
+          <Button variant="ghost" className="md:hidden">
+            <Menu className="h-6 w-6" />
+          </Button>
+        </SheetTrigger>
+        <SheetContent side="left" className="w-[240px] sm:w-[300px]">
+          <nav className="flex flex-col gap-4">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                className={cn(
+                  'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:text-primary',
+                  pathname === item.href
+                    ? 'bg-muted font-medium text-primary'
+                    : 'text-muted-foreground'
+                )}
+              >
+                {item.name}
+              </Link>
+            ))}
+          </nav>
+        </SheetContent>
+      </Sheet>
+
+      {/* Desktop Sidebar */}
+      <div className="hidden md:flex">
+        <div className="flex h-full w-[240px] flex-col border-r">
+          <ScrollArea className="flex-1 px-3">
+            <nav className="flex flex-col gap-2 py-4">
               {navigation.map((item) => (
                 <Link
                   key={item.name}
                   href={item.href}
                   className={cn(
+                    'flex items-center gap-3 rounded-lg px-3 py-2 text-sm transition-all hover:text-primary',
                     pathname === item.href
-                      ? 'bg-gray-100 text-gray-900'
-                      : 'text-gray-600 hover:bg-gray-50 hover:text-gray-900',
-                    'group flex items-center px-2 py-2 text-sm font-medium rounded-md'
+                      ? 'bg-muted font-medium text-primary'
+                      : 'text-muted-foreground'
                   )}
                 >
                   {item.name}
                 </Link>
               ))}
             </nav>
-          </div>
+          </ScrollArea>
         </div>
       </div>
-    </div>
+    </>
   )
 } 

@@ -2,6 +2,7 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
+import { UserRole } from '../users/entities/user.entity';
 
 @Injectable()
 export class AuthService {
@@ -32,7 +33,8 @@ export class AuthService {
         id: user.id,
         email: user.email,
         role: user.role
-      }
+      },
+      redirectTo: user.role === UserRole.ADMIN ? '/dashboard' : '/app'
     };
   }
 

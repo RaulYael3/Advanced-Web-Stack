@@ -10,10 +10,9 @@ import { Menu } from 'lucide-react'
 
 const navigation = [
 	{ name: 'Dashboard', href: '/dashboard' },
-	{ name: 'Cinerex', href: '/cinerex' },
-	{ name: 'Usuarios', href: '/users' },
-	{ name: 'Películas', href: '/movies' },
-	{ name: 'Reservas', href: '/reservations' },
+	{ name: 'Salas', href: '/dashboard/salas' },
+	{ name: 'Funciones', href: '/dashboard/funciones' },
+	{ name: 'Películas', href: '/dashboard/peliculas' },
 ]
 
 export const Sidebar = () => {
@@ -25,7 +24,7 @@ export const Sidebar = () => {
 			<Sheet>
 				<SheetTrigger asChild>
 					<Button variant='ghost' className='md:hidden'>
-						<Menu className='h-6 w-6' />
+						<Menu className='h-20 w-20' />
 					</Button>
 				</SheetTrigger>
 				<SheetContent side='left' className='w-[240px] sm:w-[300px]'>

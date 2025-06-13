@@ -61,6 +61,7 @@ export const useScreeningStore = create<ScreeningState>()(
 				set({ isLoading: true, error: null })
 				try {
 					const screenings = await screeningsApi.getAll()
+					console.log('Loaded screenings:', screenings)
 					set({ screenings, isLoading: false })
 				} catch (error) {
 					console.error('Error loading screenings:', error)

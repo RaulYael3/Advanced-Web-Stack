@@ -28,6 +28,7 @@ export const screeningsApi = {
 		const response = await fetch(`${API_URL}/screenings`, {
 			credentials: 'include',
 		})
+		console.log('Response from screenings API:', response)
 		return response.json()
 	},
 

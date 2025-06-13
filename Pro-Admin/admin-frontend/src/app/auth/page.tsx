@@ -96,7 +96,7 @@ export default function AuthPage() {
 								}`}
 								onClick={() => setIsLogin(true)}
 							>
-								Iniciar Sesión
+								Registrarse
 							</button>
 							<button
 								className={`flex-1 py-3 px-4 text-sm font-medium rounded-md transition-colors duration-300 ${
@@ -106,7 +106,7 @@ export default function AuthPage() {
 								}`}
 								onClick={() => setIsLogin(false)}
 							>
-								Registrarse
+								Iniciar Sesión
 							</button>
 						</div>
 					</div>

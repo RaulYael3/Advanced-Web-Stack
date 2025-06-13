@@ -2,7 +2,6 @@ import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 import { AuthState, AuthActions } from './types'
 import { authApi } from '../api/auth.api'
-import { redirect } from 'next/navigation'
 
 const initialState = {
 	token: null,
@@ -45,9 +44,13 @@ export const useAuthStore = create<AuthState & AuthActions>()(
 					set({ isLoading: true, error: null })
 					try {
 						const response = await authApi.login(loginForm)
-						if (response.error) throw new Error(response.error)
+						if (
+							response.user === undefined ||
+							response.user === null
+						)
+							throw new Error(response.error)
+
 						set({ token: response.token, user: response.user })
-						redirect('/cinerex')
 					} catch (error) {
 						set({
 							error:
@@ -85,7 +88,6 @@ export const useAuthStore = create<AuthState & AuthActions>()(
 						})
 						if (response.error) throw new Error(response.error)
 						set({ token: response.token, user: response.user })
-						redirect('/cinerex')
 					} catch (error) {
 						console.log('Error en el registro:', error)
 						set({

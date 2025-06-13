@@ -12,14 +12,23 @@ import {
 	CardHeader,
 	CardTitle,
 } from '@/components/ui/card'
+import { useRouter } from 'next/navigation'
 
 export const LoginForm = () => {
-	const { loginForm, setLoginForm, login } = useAuthStore()
-
-	const handleSubmit = (e: React.FormEvent) => {
+	const { loginForm, setLoginForm, login, user } = useAuthStore()
+	const router = useRouter()
+	console.log('LoginForm user:', router.push)
+	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
-		login()
+		await login()
+		if (user?.id !== undefined && user?.id !== null) {
+			console.log('User logged in:', user?.id)
+			router.push('/cinerex')
+			router.refresh()
+		}
 	}
+
+	// router.push('/cinerex')
 
 	return (
 		<Card

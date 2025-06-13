@@ -45,8 +45,18 @@ export const authApi = {
 	},
 
 	logout: () => {
-		// Eliminar el token de las cookies
+		// Eliminar el token de las cookies de múltiples formas para asegurar que se borre
 		document.cookie =
-			'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT'
+			'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT; secure; samesite=strict'
+		document.cookie =
+			'auth-token=; path=/; max-age=0; secure; samesite=strict'
+		document.cookie = 'auth-token=; expires=Thu, 01 Jan 1970 00:00:00 GMT'
+		document.cookie = 'auth-token=; max-age=0'
+
+		// También limpiar localStorage/sessionStorage si hay tokens almacenados
+		if (typeof window !== 'undefined') {
+			localStorage.removeItem('auth-token')
+			sessionStorage.removeItem('auth-token')
+		}
 	},
 }

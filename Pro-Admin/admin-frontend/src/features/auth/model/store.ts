@@ -29,7 +29,16 @@ export const useAuthStore = create<AuthState & AuthActions>()(
 				setUser: (user) => set({ user }),
 				setLoading: (isLoading) => set({ isLoading }),
 				setError: (error) => set({ error }),
-				logout: () => set({ ...initialState }),
+				logout: () => {
+					// Limpiar cookies
+					authApi.logout()
+					// Limpiar estado
+					set({ ...initialState })
+					// Redirigir a auth
+					if (typeof window !== 'undefined') {
+						window.location.href = '/auth'
+					}
+				},
 				// Acciones para el formulario de login
 				setLoginForm: (form) =>
 					set((state) => ({

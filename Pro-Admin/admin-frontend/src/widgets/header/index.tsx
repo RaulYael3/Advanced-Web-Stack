@@ -11,9 +11,15 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { LogoIcon } from '../icons'
+import { LogOut } from 'lucide-react'
 
 export const Header = () => {
 	const { user, logout } = useAuthStore()
+
+	const handleLogout = () => {
+		console.log('Logging out...')
+		logout()
+	}
 
 	return (
 		<header className='border-b'>
@@ -53,7 +59,11 @@ export const Header = () => {
 								</div>
 							</DropdownMenuLabel>
 							<DropdownMenuSeparator />
-							<DropdownMenuItem onClick={() => logout()}>
+							<DropdownMenuItem
+								onClick={handleLogout}
+								className='cursor-pointer flex items-center'
+							>
+								<LogOut className='mr-2 h-4 w-4' />
 								Cerrar Sesión
 							</DropdownMenuItem>
 						</DropdownMenuContent>

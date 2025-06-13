@@ -21,10 +21,11 @@ export const LoginForm = () => {
 	const handleSubmit = async (e: React.FormEvent) => {
 		e.preventDefault()
 		await login()
-		if (user?.id !== undefined && user?.id !== null) {
-			console.log('User logged in:', user?.id)
-			router.push('/cinerex')
-			router.refresh()
+
+		// Verificar si el login fue exitoso
+		const currentUser = useAuthStore.getState().user
+		if (currentUser?.id !== undefined && currentUser?.id !== null) {
+			router.push(user?.role === 'admin' ? '/dashboard' : '/cinerex')
 		}
 	}
 

@@ -1,8 +1,14 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-import { useAuthStore } from '@/features/auth/model/store'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { useAuthStore } from "@/features/auth/model/store";
 
 export default function DashboardPage() {
-  const { user } = useAuthStore()
+  const { user } = useAuthStore();
 
   return (
     <div className="flex-1 space-y-4 p-8 pt-6">
@@ -25,9 +31,7 @@ export default function DashboardPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Películas
-            </CardTitle>
+            <CardTitle className="text-sm font-medium">Películas</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">0</div>
@@ -38,15 +42,11 @@ export default function DashboardPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">
-              Reservas
-            </CardTitle>
+            <CardTitle className="text-sm font-medium">Reservas</CardTitle>
           </CardHeader>
           <CardContent>
             <div className="text-2xl font-bold">0</div>
-            <p className="text-xs text-muted-foreground">
-              Reservas activas
-            </p>
+            <p className="text-xs text-muted-foreground">Reservas activas</p>
           </CardContent>
         </Card>
       </div>
@@ -60,11 +60,12 @@ export default function DashboardPage() {
           </CardHeader>
           <CardContent>
             <p>
-              Hola {user?.name}, aquí podrás gestionar todos los aspectos de Cinerex.
+              Hola {user?.name}, aquí podrás gestionar todos los aspectos de
+              Cinerex.
             </p>
           </CardContent>
         </Card>
       </div>
     </div>
-  )
-} 
+  );
+}

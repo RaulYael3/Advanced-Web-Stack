@@ -1,5 +1,5 @@
-import { create } from 'zustand'
-import { devtools, persist } from 'zustand/middleware'
+import { create } from "zustand";
+import { devtools, persist } from "zustand/middleware";
 
 // Tipos base para el store
 interface AppState {
@@ -19,8 +19,8 @@ export const useAppStore = create<AppState & AppActions>()(
         // Implementación del store
       }),
       {
-        name: 'app-storage',
-      }
-    )
-  )
-) 
+        name: "app-storage",
+      },
+    ),
+  ),
+);

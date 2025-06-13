@@ -1,18 +1,18 @@
-import { IsNumber } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { IsNumber } from 'class-validator'
+import { ApiProperty } from '@nestjs/swagger'
 
 export class CreateRoomScreeningDto {
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'ID de la sala',
     example: 1
   })
   @IsNumber()
-  roomId: number;
+  roomId: number
 
-  @ApiProperty({ 
+  @ApiProperty({
     description: 'ID de la función',
     example: 1
   })
   @IsNumber()
-  screeningId: number;
-} 
+  screeningId: number
+}

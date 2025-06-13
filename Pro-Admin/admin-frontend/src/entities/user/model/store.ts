@@ -1,6 +1,6 @@
-import { create } from 'zustand'
-import { devtools, persist } from 'zustand/middleware'
-import { UserState, UserActions } from './types'
+import { create } from "zustand";
+import { devtools, persist } from "zustand/middleware";
+import { UserState, UserActions } from "./types";
 
 export const useUserStore = create<UserState & UserActions>()(
   devtools(
@@ -14,8 +14,8 @@ export const useUserStore = create<UserState & UserActions>()(
         setError: (error) => set({ error }),
       }),
       {
-        name: 'user-storage',
-      }
-    )
-  )
-) 
+        name: "user-storage",
+      },
+    ),
+  ),
+);

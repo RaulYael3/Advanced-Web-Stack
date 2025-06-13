@@ -1,8 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { Separator } from '@/components/ui/separator'
-import { Button } from '@/components/ui/button'
+
 import { LoginForm } from '@/features/auth/ui/LoginForm'
 import { RegisterForm } from '@/features/auth/ui/RegisterForm'
 

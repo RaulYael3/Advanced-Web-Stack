@@ -1,4 +1,10 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function CinerexPage() {
   return (
@@ -16,7 +22,8 @@ export default function CinerexPage() {
           </CardHeader>
           <CardContent>
             <p className="text-sm text-muted-foreground">
-              Aquí podrás configurar aspectos como el nombre del cine, horarios, precios y más.
+              Aquí podrás configurar aspectos como el nombre del cine, horarios,
+              precios y más.
             </p>
           </CardContent>
         </Card>
@@ -48,5 +55,5 @@ export default function CinerexPage() {
         </Card>
       </div>
     </div>
-  )
-} 
+  );
+}

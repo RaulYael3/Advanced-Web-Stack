@@ -1,17 +1,14 @@
-export function logIcon() {
+export function LogoIcon() {
 	return (
 		<svg
 			className='img-fluid'
 			id='outputsvg'
 			xmlns='http://www.w3.org/2000/svg'
 			style={{
-				transform: 'matrix(1.11388, 0, 0, 1.11388, -29.9329, -33.3785)',
-				transformOrigin: '50% 50%',
-				cursor: 'move',
 				transition: 'transform 200ms ease-in-out',
 			}}
-			width='1000'
-			height='1000'
+			width='100'
+			height='100'
 			viewBox='0 0 10000 10000'
 		>
 			<g

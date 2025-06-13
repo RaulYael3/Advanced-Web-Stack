@@ -18,8 +18,11 @@ interface Screening {
 	id: number
 	datetime: string
 	roomScreenings?: {
+		id?: number
 		room: {
+			id?: number
 			name: string
+			seats?: any[]
 		}
 	}[]
 }
@@ -50,7 +53,23 @@ export default function MovieCard({
 				)
 				if (response.ok) {
 					const data = await response.json()
-					setScreenings(data.slice(0, 3)) // Mostrar solo las primeras 3 funciones
+					// Asegurar que tengan la estructura correcta
+					const formattedScreenings = data
+						.slice(0, 3)
+						.map((screening: any) => ({
+							...screening,
+							roomScreenings:
+								screening.roomScreenings?.map((rs: any) => ({
+									id: rs.id || 0,
+									room: {
+										id: rs.room?.id || 0,
+										name:
+											rs.room?.name || 'Sala sin nombre',
+										seats: rs.room?.seats || [],
+									},
+								})) || [],
+						}))
+					setScreenings(formattedScreenings)
 				}
 			} catch (error) {
 				console.error('Error loading screenings:', error)

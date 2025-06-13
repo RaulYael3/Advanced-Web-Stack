@@ -47,8 +47,8 @@ const initialFormData: CreateRoomDto = {
 }
 
 const initialSeatFormData: CreateSeatDto = {
-	code: '',
 	row: '',
+	seatCount: 1,
 	roomId: 0,
 }
 
@@ -168,24 +168,22 @@ export const useRoomStore = create<RoomState>()(
 			createSeat: async () => {
 				const { seatFormData } = get()
 
-				// Validación más estricta
+				// Validación antes de enviar
 				if (
-					!seatFormData.code?.trim() ||
-					!seatFormData.row?.trim() ||
+					!seatFormData.row ||
+					!seatFormData.seatCount ||
 					!seatFormData.roomId
 				) {
-					set({
-						error: 'Todos los campos son requeridos y no pueden estar vacíos',
-					})
+					set({ error: 'Todos los campos son requeridos' })
 					return
 				}
 
-				console.log('Creating seat with form data:', seatFormData)
+				console.log('Creating seats with form data:', seatFormData)
 				set({ isLoading: true, error: null })
 
 				try {
-					const newSeat = await seatsApi.create(seatFormData)
-					console.log('Seat created successfully:', newSeat)
+					const result = await seatsApi.create(seatFormData)
+					console.log('Seats created:', result)
 
 					set({
 						isSeatDialogOpen: false,
@@ -198,15 +196,12 @@ export const useRoomStore = create<RoomState>()(
 						await get().loadSeats(seatFormData.roomId)
 					}
 				} catch (error) {
-					console.error('Error creating seat:', error)
-					let errorMessage = 'Error al crear el asiento'
-
-					if (error instanceof Error) {
-						errorMessage = error.message
-					}
-
+					console.error('Error creating seats:', error)
 					set({
-						error: errorMessage,
+						error:
+							error instanceof Error
+								? error.message
+								: 'Error al crear los asientos',
 						isLoading: false,
 					})
 				}

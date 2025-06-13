@@ -285,21 +285,24 @@ export default function SalasPage() {
 							</div>
 							<div className='space-y-2'>
 								<Label
-									htmlFor='seat-code'
+									htmlFor='seat-count'
 									className='text-gray-700 font-medium'
 								>
-									Número
+									Cantidad de Asientos
 								</Label>
 								<Input
-									id='seat-code'
-									value={seatFormData.code}
+									id='seat-count'
+									type='number'
+									min='1'
+									value={seatFormData.seatCount}
 									onChange={(e) =>
 										setSeatFormData({
-											code: e.target.value,
+											seatCount:
+												parseInt(e.target.value) || 1,
 										})
 									}
 									className='border-gray-300 focus:border-blue-500 focus:ring-blue-500'
-									placeholder='1, 2, 3...'
+									placeholder='10'
 								/>
 							</div>
 							<div className='space-y-2'>
@@ -312,7 +315,7 @@ export default function SalasPage() {
 									className='w-full bg-green-600 hover:bg-green-700 text-white'
 								>
 									<Plus className='h-4 w-4 mr-2' />
-									Agregar
+									Criar Fila
 								</Button>
 							</div>
 						</div>
@@ -322,24 +325,42 @@ export default function SalasPage() {
 							<h3 className='text-lg font-medium text-gray-900 mb-4'>
 								Asientos Actuales ({seats.length})
 							</h3>
-							<div className='flex gap-4 max-h-64 overflow-y-auto'>
-								{seats.map((seat) => (
+							<div className='space-y-3'>
+								{Object.entries(
+									seats.reduce((acc, seat) => {
+										if (!acc[seat.row]) acc[seat.row] = []
+										acc[seat.row].push(seat)
+										return acc
+									}, {} as Record<string, any[]>)
+								).map(([row, rowSeats]) => (
 									<div
-										key={seat.id}
-										className=' flex items-center justify-between p-2 border w-fit border-gray-200 rounded-lg bg-gray-50'
+										key={row}
+										className='p-3 border border-gray-200 rounded-lg'
 									>
-										<span className='text-sm font-medium text-gray-900'>
-											{seat.row}
-											{seat.code}
-										</span>
-										<Button
-											variant='ghost'
-											size='sm'
-											onClick={() => deleteSeat(seat.id)}
-											className='h-6 w-6 p-0 text-red-600 hover:text-red-700'
-										>
-											<Trash2 className='h-3 w-3' />
-										</Button>
+										<div className='flex items-center justify-between mb-2'>
+											<span className='font-medium'>
+												Fila {row}
+											</span>
+											<span className='text-sm text-gray-600'>
+												{rowSeats.length} asientos
+											</span>
+										</div>
+										<div className='flex gap-1 flex-wrap'>
+											{rowSeats
+												.sort(
+													(a, b) =>
+														a.seatNumber -
+														b.seatNumber
+												)
+												.map((seat) => (
+													<div
+														key={seat.id}
+														className='w-8 h-8 flex items-center justify-center text-xs border border-gray-300 rounded bg-gray-50'
+													>
+														{seat.seatNumber}
+													</div>
+												))}
+										</div>
 									</div>
 								))}
 							</div>

@@ -59,7 +59,21 @@ export default function CinerexPage() {
 						movie={movie}
 						onScreeningSelect={(screening) => {
 							setSelectedMovie(movie)
-							setSelectedScreening(screening)
+							// Crear un screening compatible con el tipo esperado
+							const fullScreening = {
+								...screening,
+								movie,
+								roomScreenings:
+									screening.roomScreenings?.map((rs) => ({
+										id: rs.id || 0,
+										room: {
+											id: rs.room.id || 0,
+											name: rs.room.name,
+											seats: rs.room.seats || [],
+										},
+									})) || [],
+							}
+							setSelectedScreening(fullScreening)
 							loadAvailableSeats(screening.id)
 							setCurrentStep('seats')
 						}}
@@ -102,13 +116,36 @@ export default function CinerexPage() {
 				subtitle={`${selectedMovie?.name} - ${new Date(
 					selectedScreening?.datetime || ''
 				).toLocaleString('es-ES')}`}
-				onBack={() => setCurrentStep('screenings')}
+				onBack={() => setCurrentStep('movies')}
 			/>
 
 			<SeatGrid
-				seats={availableSeats}
-				selectedSeats={selectedSeats}
-				onSeatClick={toggleSeatSelection}
+				seats={availableSeats.map((seat) => ({
+					id: seat.id,
+					seatNumber:
+						seat.seatNumber || parseInt(seat.code as string) || 1,
+					row: seat.row,
+					isOccupied: seat.isOccupied || false,
+				}))}
+				selectedSeats={selectedSeats.map((seat) => ({
+					id:
+						typeof seat.id === 'string'
+							? parseInt(seat.id)
+							: seat.id,
+					seatNumber: seat.seatNumber,
+					row: seat.row,
+					isOccupied: seat.isOccupied,
+				}))}
+				onSeatClick={(seat) => {
+					// Convertir el seat al formato esperado por el store
+					const storeSeat = {
+						id: seat.id.toString(),
+						seatNumber: seat.seatNumber,
+						row: seat.row,
+						isOccupied: seat.isOccupied,
+					}
+					toggleSeatSelection(storeSeat)
+				}}
 			/>
 
 			{selectedSeats.length > 0 && (
@@ -122,7 +159,7 @@ export default function CinerexPage() {
 					<p className='text-lg font-semibold text-brand-dark-800 mb-4'>
 						Asientos seleccionados:{' '}
 						{selectedSeats
-							.map((s) => `${s.row}${s.code}`)
+							.map((s) => `${s.row}${s.seatNumber}`)
 							.join(', ')}
 					</p>
 					<Button

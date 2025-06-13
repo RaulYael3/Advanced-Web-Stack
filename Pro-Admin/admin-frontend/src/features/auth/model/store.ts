@@ -2,6 +2,7 @@ import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
 import { AuthState, AuthActions } from './types'
 import { authApi } from '../api/auth.api'
+import { redirect } from 'next/navigation'
 
 const initialState = {
 	token: null,
@@ -46,6 +47,7 @@ export const useAuthStore = create<AuthState & AuthActions>()(
 						const response = await authApi.login(loginForm)
 						if (response.error) throw new Error(response.error)
 						set({ token: response.token, user: response.user })
+						redirect('/cinerex')
 					} catch (error) {
 						set({
 							error:
@@ -68,7 +70,6 @@ export const useAuthStore = create<AuthState & AuthActions>()(
 					}),
 				register: async () => {
 					const { registerForm } = get()
-					console.log('Registering with:', registerForm)
 					if (
 						registerForm.password !== registerForm.confirmPassword
 					) {
@@ -80,11 +81,13 @@ export const useAuthStore = create<AuthState & AuthActions>()(
 						const response = await authApi.register({
 							email: registerForm.email,
 							password: registerForm.password,
+							role: 'user',
 						})
-
 						if (response.error) throw new Error(response.error)
 						set({ token: response.token, user: response.user })
+						redirect('/cinerex')
 					} catch (error) {
+						console.log('Error en el registro:', error)
 						set({
 							error:
 								error instanceof Error

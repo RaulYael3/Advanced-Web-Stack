@@ -9,6 +9,6 @@ import { S3Module } from '../s3/s3.module'
   imports: [TypeOrmModule.forFeature([Movie]), S3Module],
   controllers: [MoviesController],
   providers: [MoviesService],
-  exports: [MoviesService]
+  exports: [MoviesService] // Asegurar que MoviesService esté exportado
 })
 export class MoviesModule {}

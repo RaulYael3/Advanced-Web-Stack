@@ -4,25 +4,18 @@ import { Repository } from 'typeorm'
 import { CreateScreeningDto } from './dto/create-screening.dto'
 import { UpdateScreeningDto } from './dto/update-screening.dto'
 import { Screening } from './entities/screening.entity'
-import { Movie } from '../movies/entities/movie.entity'
+import { MoviesService } from '../movies/movies.service'
 
 @Injectable()
 export class ScreeningsService {
   constructor(
     @InjectRepository(Screening)
     private screeningRepository: Repository<Screening>,
-    @InjectRepository(Movie)
-    private movieRepository: Repository<Movie>
+    private moviesService: MoviesService // Usar el servicio en lugar del repositorio directamente
   ) {}
 
   async create(createScreeningDto: CreateScreeningDto) {
-    const movie = await this.movieRepository.findOne({
-      where: { id: createScreeningDto.movieId }
-    })
-
-    if (!movie) {
-      throw new NotFoundException('Movie not found')
-    }
+    const movie = await this.moviesService.findOne(createScreeningDto.movieId)
 
     const screening = this.screeningRepository.create({
       datetime: createScreeningDto.datetime,
@@ -55,12 +48,7 @@ export class ScreeningsService {
     const screening = await this.findOne(id)
 
     if (updateScreeningDto.movieId) {
-      const movie = await this.movieRepository.findOne({
-        where: { id: updateScreeningDto.movieId }
-      })
-      if (!movie) {
-        throw new NotFoundException('Movie not found')
-      }
+      const movie = await this.moviesService.findOne(updateScreeningDto.movieId)
       screening.movie = movie
     }
 

@@ -51,6 +51,13 @@ export class SeatsController {
     return this.seatsService.findAll()
   }
 
+  @Get('all-with-occupancy')
+  @ApiOperation({ summary: 'Obtener todos los asientos con estado de ocupación' })
+  @ApiResponse({ status: 200, description: 'Lista de todos los asientos con estado' })
+  async getAllSeatsWithOccupancy() {
+    return this.seatsService.getAllSeatsWithOccupancy()
+  }
+
   @Get(':id')
   @ApiOperation({ summary: 'Obtener un asiento por ID' })
   findOne(@Param('id') id: string) {

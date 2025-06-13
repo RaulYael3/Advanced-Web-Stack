@@ -16,24 +16,30 @@ export class SeatsService {
   ) {}
 
   async create(createSeatDto: CreateSeatDto) {
-    console.log('SeatsService.create called with:', createSeatDto)
+    console.log('Creating seats with data:', createSeatDto)
 
     try {
       const room = await this.roomsService.findOne(createSeatDto.roomId)
-      console.log('Room found:', room)
 
-      const seat = this.seatRepository.create({
-        code: createSeatDto.code,
-        row: createSeatDto.row,
-        room
-      })
+      // Crear múltiples asientos individuales
+      const seats = []
+      for (let i = 1; i <= createSeatDto.seatCount; i++) {
+        const seat = this.seatRepository.create({
+          seatNumber: i,
+          row: createSeatDto.row,
+          isOccupied: false, // Por defecto no ocupado
+          room
+        })
+        seats.push(seat)
+      }
 
-      console.log('Seat entity created:', seat)
+      const savedSeats = await this.seatRepository.save(seats)
+      console.log('Seats created successfully:', savedSeats.length)
 
-      const savedSeat = await this.seatRepository.save(seat)
-      console.log('Seat saved:', savedSeat)
-
-      return savedSeat
+      return {
+        message: `${savedSeats.length} asientos creados exitosamente`,
+        seats: savedSeats
+      }
     } catch (error) {
       console.error('Error in SeatsService.create:', error)
       throw error
@@ -42,7 +48,11 @@ export class SeatsService {
 
   async findAll() {
     return await this.seatRepository.find({
-      relations: ['room']
+      relations: ['room'],
+      order: {
+        row: 'ASC',
+        seatNumber: 'ASC'
+      }
     })
   }
 
@@ -80,7 +90,29 @@ export class SeatsService {
   async findByRoom(roomId: number) {
     return await this.seatRepository.find({
       where: { room: { id: roomId } },
-      relations: ['room']
+      relations: ['room'],
+      order: {
+        row: 'ASC',
+        seatNumber: 'ASC'
+      }
+    })
+  }
+
+  async updateSeatOccupancy(seatId: number, isOccupied: boolean) {
+    const seat = await this.findOne(seatId)
+    seat.isOccupied = isOccupied
+    return await this.seatRepository.save(seat)
+  }
+
+  // Método simple para obtener todos los asientos con su estado actual
+  async getAllSeatsWithOccupancy() {
+    return await this.seatRepository.find({
+      relations: ['room'],
+      order: {
+        room: { id: 'ASC' },
+        row: 'ASC',
+        seatNumber: 'ASC'
+      }
     })
   }
 }

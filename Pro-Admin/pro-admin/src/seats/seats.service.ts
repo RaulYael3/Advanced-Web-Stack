@@ -15,15 +15,28 @@ export class SeatsService {
   ) {}
 
   async create(createSeatDto: CreateSeatDto) {
-    const room = await this.roomsService.findOne(createSeatDto.roomId)
+    console.log('SeatsService.create called with:', createSeatDto)
 
-    const seat = this.seatRepository.create({
-      code: createSeatDto.code,
-      row: createSeatDto.row,
-      room
-    })
+    try {
+      const room = await this.roomsService.findOne(createSeatDto.roomId)
+      console.log('Room found:', room)
 
-    return await this.seatRepository.save(seat)
+      const seat = this.seatRepository.create({
+        code: createSeatDto.code,
+        row: createSeatDto.row,
+        room
+      })
+
+      console.log('Seat entity created:', seat)
+
+      const savedSeat = await this.seatRepository.save(seat)
+      console.log('Seat saved:', savedSeat)
+
+      return savedSeat
+    } catch (error) {
+      console.error('Error in SeatsService.create:', error)
+      throw error
+    }
   }
 
   async findAll() {

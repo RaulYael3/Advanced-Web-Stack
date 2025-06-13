@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger'
 import { IsString, IsNotEmpty, IsNumber } from 'class-validator'
+import { Transform } from 'class-transformer'
 
 export class CreateSeatDto {
   @ApiProperty({ description: 'Código del asiento', example: 'A1' })
@@ -13,6 +14,7 @@ export class CreateSeatDto {
   row: string
 
   @ApiProperty({ description: 'ID de la sala', example: 1 })
+  @Transform(({ value }) => parseInt(value))
   @IsNumber()
   @IsNotEmpty()
   roomId: number

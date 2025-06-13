@@ -1,14 +1,8 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
-import {
-	Card,
-	CardContent,
-	CardDescription,
-	CardHeader,
-	CardTitle,
-} from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -21,7 +15,7 @@ import {
 	DialogTrigger,
 } from '@/components/ui/dialog'
 import { useRoomStore } from '@/features/rooms/model/store'
-import { Plus, Edit, Trash2, Users, MapPin, Armchair } from 'lucide-react'
+import { Plus, Edit, Trash2, MapPin, Armchair } from 'lucide-react'
 
 export default function SalasPage() {
 	const {
@@ -52,6 +46,10 @@ export default function SalasPage() {
 	useEffect(() => {
 		loadRooms()
 	}, [loadRooms])
+
+	const seatsNumber = useMemo(() => {
+		return seats.reduce((acc, seat) => acc + Number(seat.code), 0)
+	}, [seats])
 
 	return (
 		<div className='flex-1 space-y-6 p-8 pt-6 '>
@@ -178,7 +176,7 @@ export default function SalasPage() {
 										Asientos
 									</span>
 									<span className='text-sm font-medium text-gray-900'>
-										{room.seats?.length || 0}
+										{seatsNumber || 0}
 									</span>
 								</div>
 								<Button
@@ -324,11 +322,11 @@ export default function SalasPage() {
 							<h3 className='text-lg font-medium text-gray-900 mb-4'>
 								Asientos Actuales ({seats.length})
 							</h3>
-							<div className='grid grid-cols-8 gap-2 max-h-64 overflow-y-auto'>
+							<div className='flex gap-4 max-h-64 overflow-y-auto'>
 								{seats.map((seat) => (
 									<div
 										key={seat.id}
-										className='flex items-center justify-between p-2 border border-gray-200 rounded-lg bg-gray-50'
+										className=' flex items-center justify-between p-2 border w-fit border-gray-200 rounded-lg bg-gray-50'
 									>
 										<span className='text-sm font-medium text-gray-900'>
 											{seat.row}

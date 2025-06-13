@@ -70,7 +70,6 @@ export const useAuthStore = create<AuthState & AuthActions>()(
           set({ isLoading: true, error: null })
           try {
             const response = await authApi.register({
-              name: registerForm.name,
               email: registerForm.email,
               password: registerForm.password,
             })

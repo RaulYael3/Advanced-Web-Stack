@@ -69,10 +69,10 @@ export default function AuthPage() {
 					{/* Toggle buttons for mobile - always at bottom */}
 					<div className='lg:hidden pb-8'>
 						<div
-							className='relative bg-brand-500 rounded-lg p-2'
+							className='relative bg-brand-500 rounded-lg p-2 overflow-hidden'
 							style={{
 								boxShadow:
-									'inset 6px 6px 20px -15px rgba(36, 26, 0, 0.47), inset -6px -6px 20px #FBF7F6',
+									'inset 6px 6px 20px -10px rgba(36, 26, 0, 0.47), inset -6px -6px 20px #FBF7F6',
 							}}
 						>
 							{/* Sliding background indicator */}
@@ -84,7 +84,7 @@ export default function AuthPage() {
 								}`}
 								style={{
 									boxShadow:
-										'-6px -6px 20px 10px #FBF7F6, 6px 6px 20px #9b9c98',
+										'-6px -6px 20px #FBF7F6, 6px 6px 20px -5px #9b9c98',
 								}}
 							/>
 

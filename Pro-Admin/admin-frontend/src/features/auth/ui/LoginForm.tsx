@@ -1,3 +1,5 @@
+'use client'
+
 import { useAuthStore } from '../model/store'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -13,13 +15,13 @@ export const LoginForm = () => {
   }
 
   return (
-    <Card>
+    <Card className='border-none shadow-none bg-[#fbf7f6]' style={{boxShadow: 'inset 6px 6px 20px rgb(255, 255, 255), 6px 6px 20px -15px rgba(36, 26, 0, 0.47)'}}>
       <CardHeader>
         <CardTitle>Iniciar Sesión</CardTitle>
         <CardDescription>Ingresa tus credenciales para acceder al panel</CardDescription>
       </CardHeader>
       <form onSubmit={handleSubmit}>
-        <CardContent className="space-y-4">
+        <CardContent className="space-y-4 gap-4">
           <div className="space-y-2">
             <Label htmlFor="email">Email</Label>
             <Input
@@ -29,6 +31,8 @@ export const LoginForm = () => {
               value={loginForm.email}
               onChange={(e) => setLoginForm({ ...loginForm, email: e.target.value })}
               required
+              className='border-none bg-transparent'
+              style={{boxShadow:'inset 6px 6px 20px -15px rgba(36, 26, 0, 0.47)'}}
             />
           </div>
           <div className="space-y-2">
@@ -39,11 +43,16 @@ export const LoginForm = () => {
               value={loginForm.password}
               onChange={(e) => setLoginForm({ ...loginForm, password: e.target.value })}
               required
+              className='border-none bg-transparent'
+              style={{boxShadow:'inset 6px 6px 20px -15px rgba(36, 26, 0, 0.47)'}}
             />
           </div>
         </CardContent>
-        <CardFooter>
-          <Button type="submit" className="w-full">
+        <CardFooter className='mt-8'>
+          <Button type="submit" 
+                  className="w-full cursor-pointer border-none bg-transparent text-black"
+                  style={{boxShadow: 'inset 6px 6px 20px rgb(255, 255, 255), 6px 6px 20px -15px rgba(36, 26, 0, 0.47)'}}
+          >
             Iniciar Sesión
           </Button>
         </CardFooter>

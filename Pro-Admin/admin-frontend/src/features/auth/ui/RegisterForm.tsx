@@ -1,3 +1,5 @@
+'use client'
+
 import { useAuthStore } from '../model/store'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -64,7 +66,7 @@ export const RegisterForm = () => {
           </div>
         </CardContent>
         <CardFooter>
-          <Button type="submit" className="w-full">
+          <Button type="submit" className="w-full cursor-pointer">
             Registrarse
           </Button>
         </CardFooter>

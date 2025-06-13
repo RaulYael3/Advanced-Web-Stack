@@ -5,8 +5,8 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Pro-Admin - Panel de Administración",
-  description: "Panel de administración para Cinerex",
+  title: "Cinerex",
+  description: "Donde la magia de la película se hace realidad",
 };
 
 export default function RootLayout({
@@ -17,7 +17,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body className={inter.className}>
-        <main className="min-h-screen bg-gray-50">
+        <main className="min-h-screen ">
           {children}
         </main>
       </body>

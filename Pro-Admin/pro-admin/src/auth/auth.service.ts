@@ -22,6 +22,7 @@ export class AuthService {
 
   async login(email: string, password: string) {
     const user = await this.validateUser(email, password)
+    console.log('User found:', user)
     if (!user) {
       throw new UnauthorizedException('Invalid credentials')
     }
@@ -34,7 +35,7 @@ export class AuthService {
         email: user.email,
         role: user.role
       },
-      redirectTo: user.role === UserRole.ADMIN ? '/dashboard' : '/app'
+      role: user.role as UserRole
     }
   }
 

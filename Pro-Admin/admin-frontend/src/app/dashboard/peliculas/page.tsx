@@ -291,7 +291,7 @@ export default function PeliculasPage() {
 					{movies.map((movie) => (
 						<Card
 							key={movie.id}
-							className='bg-white border border-gray-200 shadow-sm hover:shadow-md transition-shadow'
+							className='bg-white border h-[500px] border-gray-200 shadow-sm hover:shadow-md transition-shadow'
 						>
 							<div className='aspect-[2/3] relative overflow-hidden rounded-t-lg bg-gray-100'>
 								{movie.photo ? (

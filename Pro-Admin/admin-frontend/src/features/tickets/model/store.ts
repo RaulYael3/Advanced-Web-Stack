@@ -1,12 +1,45 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import {
-	ticketsApi,
-	Movie,
-	Screening,
-	Seat,
-	CreateTicketDto,
-} from '../api/tickets.api'
+import { ticketsApi } from '../api/tickets.api'
+
+interface Movie {
+	id: number
+	name: string
+	duration: number
+	photo?: string
+	synopsis?: string
+	classification?: string
+	genre?: string
+}
+
+interface Screening {
+	id: number
+	datetime: string
+	movie: Movie
+	roomScreenings: {
+		id: number
+		room: {
+			id: number
+			name: string
+			seats?: any[]
+		}
+	}[]
+}
+
+interface Seat {
+	id: number
+	seatNumber: number
+	row: string
+	isOccupied?: boolean
+	code?: string // Para compatibilidad con el formato anterior
+}
+
+interface IndividualSeat {
+	id: string
+	seatNumber: number
+	row: string
+	isOccupied: boolean
+}
 
 interface TicketState {
 	movies: Movie[]
@@ -14,7 +47,7 @@ interface TicketState {
 	availableSeats: Seat[]
 	selectedMovie: Movie | null
 	selectedScreening: Screening | null
-	selectedSeats: Seat[]
+	selectedSeats: IndividualSeat[]
 	customerInfo: {
 		name: string
 		email: string
@@ -26,7 +59,7 @@ interface TicketState {
 	// Actions
 	setSelectedMovie: (movie: Movie | null) => void
 	setSelectedScreening: (screening: Screening | null) => void
-	toggleSeatSelection: (seat: Seat) => void
+	toggleSeatSelection: (seat: IndividualSeat) => void
 	setCustomerInfo: (info: { name: string; email: string }) => void
 	setCurrentStep: (
 		step: 'movies' | 'screenings' | 'seats' | 'checkout' | 'confirmation'
@@ -102,16 +135,53 @@ export const useTicketStore = create<TicketState>()(
 				}
 			},
 
-			loadAvailableSeats: async (screeningId) => {
+			loadAvailableSeats: async (screeningId: number) => {
+				console.log(
+					'Loading all seats (not filtered by screening):',
+					screeningId
+				)
 				set({ isLoading: true, error: null })
 				try {
-					const seats = await ticketsApi.getAvailableSeats(
-						screeningId
+					// Cargar TODOS los asientos, siempre
+					const seatsResponse = await fetch(
+						`${
+							process.env.NEXT_PUBLIC_API_URL ||
+							'http://localhost:4000'
+						}/seats`,
+						{
+							credentials: 'include',
+						}
 					)
-					set({ availableSeats: seats, isLoading: false })
-				} catch (error: unknown) {
+
+					if (!seatsResponse.ok) {
+						throw new Error('Failed to fetch seats')
+					}
+
+					const allSeats = await seatsResponse.json()
+					console.log('All seats loaded (always all):', allSeats)
+
+					// Convertir al formato esperado sin filtrar
+					const formattedSeats = allSeats.map((seat: any) => ({
+						id: seat.id,
+						seatNumber: seat.seatNumber || seat.seat_number || 1,
+						row: seat.row,
+						isOccupied:
+							seat.isOccupied || seat.is_occupied || false,
+						room: seat.room,
+						code:
+							seat.seatNumber?.toString() ||
+							seat.seat_number?.toString() ||
+							'1',
+					}))
+
+					console.log(
+						'All formatted seats (no filtering):',
+						formattedSeats
+					)
+					set({ availableSeats: formattedSeats, isLoading: false })
+				} catch (error) {
+					console.error('Error loading seats:', error)
 					set({ error: 'Error al cargar asientos', isLoading: false })
-					console.error('Error loading available seats:', error)
 				}
 			},
 

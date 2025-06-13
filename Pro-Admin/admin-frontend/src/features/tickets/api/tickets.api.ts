@@ -57,14 +57,39 @@ export const ticketsApi = {
 		return response.json()
 	},
 
-	getAvailableSeats: async (screeningId: number): Promise<Seat[]> => {
-		const response = await fetch(
-			`${API_URL}/seats/available/${screeningId}`,
-			{
+	getAllSeats: async (): Promise<IndividualSeat[]> => {
+		try {
+			const response = await fetch(`${API_URL}/seats`, {
 				credentials: 'include',
+			})
+
+			if (!response.ok) {
+				throw new Error('Error fetching seats')
 			}
-		)
-		return response.json()
+
+			const seats = await response.json()
+
+			// Convertir al formato esperado
+			return seats.map((seat: any) => ({
+				id: seat.id,
+				seatNumber: seat.seatNumber || seat.seat_number,
+				row: seat.row,
+				isOccupied: seat.isOccupied || seat.is_occupied || false,
+				room: seat.room,
+			}))
+		} catch (error) {
+			console.error('Error fetching all seats:', error)
+			return []
+		}
+	},
+
+	getSeatsForScreening: async (
+		screeningId: number
+	): Promise<IndividualSeat[]> => {
+		// Por ahora, simplemente devolvemos todos los asientos
+		// En el futuro, si necesitas filtrar por función específica,
+		// puedes agregar esa lógica aquí
+		return await ticketsApi.getAllSeats()
 	},
 
 	purchaseTicket: async (ticketData: CreateTicketDto) => {

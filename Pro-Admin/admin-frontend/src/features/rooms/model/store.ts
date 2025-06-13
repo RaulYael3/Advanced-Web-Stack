@@ -101,20 +101,6 @@ export const useRoomStore = create<RoomState>()(
 				}
 			},
 
-			loadSeats: async (roomId: number) => {
-				set({ isLoading: true, error: null })
-				try {
-					const seats = await seatsApi.getByRoom(roomId)
-					set({ seats, isLoading: false })
-				} catch (error) {
-					console.error('Error loading seats:', error)
-					set({
-						error: 'Error al cargar los asientos',
-						isLoading: false,
-					})
-				}
-			},
-
 			createRoom: async () => {
 				const { formData } = get()
 				set({ isLoading: true, error: null })
@@ -181,21 +167,63 @@ export const useRoomStore = create<RoomState>()(
 
 			createSeat: async () => {
 				const { seatFormData } = get()
+
+				// Validación más estricta
+				if (
+					!seatFormData.code?.trim() ||
+					!seatFormData.row?.trim() ||
+					!seatFormData.roomId
+				) {
+					set({
+						error: 'Todos los campos son requeridos y no pueden estar vacíos',
+					})
+					return
+				}
+
+				console.log('Creating seat with form data:', seatFormData)
 				set({ isLoading: true, error: null })
+
 				try {
-					await seatsApi.create(seatFormData)
+					const newSeat = await seatsApi.create(seatFormData)
+					console.log('Seat created successfully:', newSeat)
+
 					set({
 						isSeatDialogOpen: false,
 						seatFormData: initialSeatFormData,
 						isLoading: false,
 					})
+
+					// Recargar asientos
 					if (seatFormData.roomId) {
-						get().loadSeats(seatFormData.roomId)
+						await get().loadSeats(seatFormData.roomId)
 					}
 				} catch (error) {
 					console.error('Error creating seat:', error)
+					let errorMessage = 'Error al crear el asiento'
+
+					if (error instanceof Error) {
+						errorMessage = error.message
+					}
+
 					set({
-						error: 'Error al crear el asiento',
+						error: errorMessage,
+						isLoading: false,
+					})
+				}
+			},
+
+			loadSeats: async (roomId: number) => {
+				console.log('Loading seats for room:', roomId)
+				set({ isLoading: true, error: null })
+
+				try {
+					const seats = await seatsApi.getByRoom(roomId)
+					console.log('Seats loaded:', seats)
+					set({ seats, isLoading: false })
+				} catch (error) {
+					console.error('Error loading seats:', error)
+					set({
+						error: 'Error al cargar los asientos',
 						isLoading: false,
 					})
 				}

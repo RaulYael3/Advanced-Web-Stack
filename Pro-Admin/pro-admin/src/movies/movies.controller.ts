@@ -7,7 +7,9 @@ import {
   Param,
   Delete,
   UseInterceptors,
-  UploadedFile
+  UploadedFile,
+  UsePipes,
+  ValidationPipe
 } from '@nestjs/common'
 import { FileInterceptor } from '@nestjs/platform-express'
 import { MoviesService } from './movies.service'
@@ -18,6 +20,7 @@ import { Movie } from './entities/movie.entity'
 
 @ApiTags('movies')
 @Controller('movies')
+@UsePipes(new ValidationPipe({ transform: true }))
 export class MoviesController {
   constructor(private readonly moviesService: MoviesService) {}
 
@@ -40,9 +43,9 @@ export class MoviesController {
       }
     }
   })
-  @UseInterceptors(FileInterceptor('file'))
+  @UseInterceptors(FileInterceptor('imageUrl'))
   create(@Body() createMovieDto: CreateMovieDto, @UploadedFile() file: Express.Multer.File) {
-    return this.moviesService.create(createMovieDto, file)
+    return this.moviesService.create(file, createMovieDto)
   }
 
   @Get()

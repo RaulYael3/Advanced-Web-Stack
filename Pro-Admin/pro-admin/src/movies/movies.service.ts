@@ -14,7 +14,8 @@ export class MoviesService {
     private readonly s3Service: S3Service
   ) {}
 
-  async create(createMovieDto: CreateMovieDto, file?: Express.Multer.File) {
+  async create(file: Express.Multer.File, createMovieDto: CreateMovieDto) {
+    console.log('llgamos hasta aca con:', createMovieDto)
     const movie = this.movieRepository.create(createMovieDto)
 
     if (file) {

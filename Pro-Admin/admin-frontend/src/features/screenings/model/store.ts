@@ -5,9 +5,13 @@ import {
 	Screening,
 	CreateScreeningDto,
 } from '../api/screenings.api'
+import { moviesApi, Movie } from '@/features/movies/api/movies.api'
+import { roomsApi, Room } from '@/features/rooms/api/rooms.api'
 
 interface ScreeningState {
 	screenings: Screening[]
+	movies: Movie[]
+	rooms: Room[]
 	isLoading: boolean
 	error: string | null
 	formData: CreateScreeningDto
@@ -21,6 +25,8 @@ interface ScreeningState {
 	setIsEditDialogOpen: (open: boolean) => void
 	setEditingScreening: (screening: Screening | null) => void
 	loadScreenings: () => Promise<void>
+	loadMovies: () => Promise<void>
+	loadRooms: () => Promise<void>
 	createScreening: () => Promise<void>
 	updateScreening: () => Promise<void>
 	deleteScreening: (id: number) => Promise<void>
@@ -38,6 +44,8 @@ export const useScreeningStore = create<ScreeningState>()(
 	devtools(
 		(set, get) => ({
 			screenings: [],
+			movies: [],
+			rooms: [],
 			isLoading: false,
 			error: null,
 			formData: initialFormData,
@@ -61,7 +69,6 @@ export const useScreeningStore = create<ScreeningState>()(
 				set({ isLoading: true, error: null })
 				try {
 					const screenings = await screeningsApi.getAll()
-					console.log('Loaded screenings:', screenings)
 					set({ screenings, isLoading: false })
 				} catch (error) {
 					console.error('Error loading screenings:', error)
@@ -69,6 +76,24 @@ export const useScreeningStore = create<ScreeningState>()(
 						error: 'Error al cargar las funciones',
 						isLoading: false,
 					})
+				}
+			},
+
+			loadMovies: async () => {
+				try {
+					const movies = await moviesApi.getAll()
+					set({ movies })
+				} catch (error) {
+					console.error('Error loading movies:', error)
+				}
+			},
+
+			loadRooms: async () => {
+				try {
+					const rooms = await roomsApi.getAll()
+					set({ rooms })
+				} catch (error) {
+					console.error('Error loading rooms:', error)
 				}
 			},
 

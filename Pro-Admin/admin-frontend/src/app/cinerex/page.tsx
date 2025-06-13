@@ -52,15 +52,16 @@ export default function CinerexPage() {
 				showBack={false}
 			/>
 
-			<div className='grid gap-8 md:grid-cols-2 lg:grid-cols-3'>
+			<div className='space-y-8'>
 				{movies.map((movie) => (
 					<MovieCard
 						key={movie.id}
 						movie={movie}
-						onClick={() => {
+						onScreeningSelect={(screening) => {
 							setSelectedMovie(movie)
-							loadScreenings(movie.id)
-							setCurrentStep('screenings')
+							setSelectedScreening(screening)
+							loadAvailableSeats(screening.id)
+							setCurrentStep('seats')
 						}}
 					/>
 				))}

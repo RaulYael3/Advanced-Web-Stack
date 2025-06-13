@@ -18,6 +18,11 @@ const navigation = [
 export const Sidebar = () => {
 	const pathname = usePathname()
 
+	// No mostrar sidebar en rutas de cinerex (aplicación pública)
+	if (pathname.startsWith('/cinerex')) {
+		return null
+	}
+
 	return (
 		<>
 			{/* Mobile Sidebar */}

@@ -254,7 +254,7 @@ export default function FuncionesPage() {
 									<CardTitle className='text-gray-900 text-lg font-semibold flex items-center'>
 										<Film className='h-5 w-5 mr-2 text-blue-600' />
 										{screening.movie.title ||
-											screening.movie.name}
+											screening.movie.title}
 									</CardTitle>
 									<div className='flex space-x-1'>
 										<Button

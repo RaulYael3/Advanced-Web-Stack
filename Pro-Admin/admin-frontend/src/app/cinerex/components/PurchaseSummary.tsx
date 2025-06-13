@@ -27,16 +27,32 @@ export default function PurchaseSummary({
 	pricePerTicket = 12,
 }: PurchaseSummaryProps) {
 	return (
-		<Card>
-			<CardHeader>
-				<CardTitle>Resumen de Compra</CardTitle>
+		<div
+			className='bg-brand-100 rounded-3xl p-6'
+			style={{
+				boxShadow:
+					'-6px -6px 20px var(--color-brand-50), 6px 6px 20px -10px var(--color-brand-700)',
+			}}
+		>
+			<CardHeader className='p-0 pb-6'>
+				<CardTitle className='text-brand-dark-800 text-xl'>
+					Resumen de Compra
+				</CardTitle>
 			</CardHeader>
-			<CardContent className='space-y-4'>
+			<CardContent className='p-0 space-y-6'>
 				{movie && (
-					<div>
-						<p className='font-semibold'>{movie.name}</p>
+					<div
+						className='p-4 rounded-2xl bg-brand-100'
+						style={{
+							boxShadow:
+								'inset -4px -4px 12px var(--color-brand-50), inset 4px 4px 12px -6px var(--color-brand-700)',
+						}}
+					>
+						<p className='font-semibold text-brand-dark-800'>
+							{movie.name}
+						</p>
 						{screening && (
-							<p className='text-gray-600'>
+							<p className='text-brand-dark-600 mt-1'>
 								{new Date(screening.datetime).toLocaleString(
 									'es-ES'
 								)}
@@ -44,18 +60,34 @@ export default function PurchaseSummary({
 						)}
 					</div>
 				)}
-				<div>
-					<p className='font-semibold'>Asientos:</p>
-					<p className='text-gray-600'>
+
+				<div
+					className='p-4 rounded-2xl bg-brand-100'
+					style={{
+						boxShadow:
+							'inset -4px -4px 12px var(--color-brand-50), inset 4px 4px 12px -6px var(--color-brand-700)',
+					}}
+				>
+					<p className='font-semibold text-brand-dark-800'>
+						Asientos:
+					</p>
+					<p className='text-brand-dark-600 mt-1'>
 						{seats.map((s) => `${s.row}${s.code}`).join(', ')}
 					</p>
 				</div>
-				<div>
-					<p className='font-semibold'>
+
+				<div
+					className='p-4 rounded-2xl bg-brand-100'
+					style={{
+						boxShadow:
+							'inset -4px -4px 12px var(--color-brand-50), inset 4px 4px 12px -6px var(--color-brand-700)',
+					}}
+				>
+					<p className='font-bold text-xl text-brand-dark-800'>
 						Total: ${seats.length * pricePerTicket}.00
 					</p>
 				</div>
 			</CardContent>
-		</Card>
+		</div>
 	)
 }

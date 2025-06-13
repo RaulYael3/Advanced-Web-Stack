@@ -45,14 +45,14 @@ export default function CinerexPage() {
 
 	// Movie Selection Step
 	const renderMoviesStep = () => (
-		<div className='space-y-6'>
+		<div className='space-y-8'>
 			<StepNavigation
 				title='Selecciona una Película'
 				subtitle='Elige la película que quieres ver'
 				showBack={false}
 			/>
 
-			<div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
+			<div className='grid gap-8 md:grid-cols-2 lg:grid-cols-3'>
 				{movies.map((movie) => (
 					<MovieCard
 						key={movie.id}
@@ -70,14 +70,14 @@ export default function CinerexPage() {
 
 	// Screening Selection Step
 	const renderScreeningsStep = () => (
-		<div className='space-y-6'>
+		<div className='space-y-8'>
 			<StepNavigation
 				title='Horarios Disponibles'
 				subtitle={`Para: ${selectedMovie?.name}`}
 				onBack={() => setCurrentStep('movies')}
 			/>
 
-			<div className='grid gap-4 md:grid-cols-2 lg:grid-cols-3'>
+			<div className='grid gap-6 md:grid-cols-2 lg:grid-cols-3'>
 				{screenings.map((screening) => (
 					<ScreeningCard
 						key={screening.id}
@@ -95,7 +95,7 @@ export default function CinerexPage() {
 
 	// Seat Selection Step
 	const renderSeatsStep = () => (
-		<div className='space-y-6'>
+		<div className='space-y-8'>
 			<StepNavigation
 				title='Selecciona tus Asientos'
 				subtitle={`${selectedMovie?.name} - ${new Date(
@@ -111,15 +111,25 @@ export default function CinerexPage() {
 			/>
 
 			{selectedSeats.length > 0 && (
-				<div className='mt-6 text-center'>
-					<p className='text-lg font-semibold'>
+				<div
+					className='mt-8 text-center p-6 rounded-3xl bg-brand-100'
+					style={{
+						boxShadow:
+							'inset -6px -6px 20px var(--color-brand-50), inset 6px 6px 20px -10px var(--color-brand-700)',
+					}}
+				>
+					<p className='text-lg font-semibold text-brand-dark-800 mb-4'>
 						Asientos seleccionados:{' '}
 						{selectedSeats
 							.map((s) => `${s.row}${s.code}`)
 							.join(', ')}
 					</p>
 					<Button
-						className='mt-4'
+						className='border-none bg-transparent text-brand-dark-700 hover:bg-brand-200 px-8 py-3'
+						style={{
+							boxShadow:
+								'-6px -6px 20px var(--color-brand-50), 6px 6px 20px -10px var(--color-brand-700)',
+						}}
 						onClick={() => setCurrentStep('checkout')}
 					>
 						Continuar al Checkout
@@ -132,13 +142,13 @@ export default function CinerexPage() {
 
 	// Checkout Step
 	const renderCheckoutStep = () => (
-		<div className='space-y-6'>
+		<div className='space-y-8'>
 			<StepNavigation
 				title='Información del Cliente'
 				onBack={() => setCurrentStep('seats')}
 			/>
 
-			<div className='grid gap-6 md:grid-cols-2'>
+			<div className='grid gap-8 md:grid-cols-2'>
 				<PurchaseSummary
 					movie={selectedMovie!}
 					screening={selectedScreening!}
@@ -163,8 +173,14 @@ export default function CinerexPage() {
 	return (
 		<div className='space-y-8'>
 			{error && (
-				<div className='bg-red-50 border border-red-200 rounded-lg p-4'>
-					<p className='text-red-800 text-sm'>{error}</p>
+				<div
+					className='bg-brand-100 border border-transparent rounded-3xl p-6'
+					style={{
+						boxShadow:
+							'inset 6px 6px 20px -10px var(--color-brand-700), inset -6px -6px 20px var(--color-brand-50)',
+					}}
+				>
+					<p className='text-red-600 text-sm font-medium'>{error}</p>
 				</div>
 			)}
 

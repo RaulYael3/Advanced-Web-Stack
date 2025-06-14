@@ -1,60 +1,73 @@
 import { create } from 'zustand'
 import { devtools, persist } from 'zustand/middleware'
-import { AuthState, AuthActions } from './types'
 import { authApi } from '../api/auth.api'
 
-const initialState = {
-	token: null,
-	user: null,
-	isLoading: false,
-	error: null,
-	loginForm: {
-		email: '',
-		password: '',
-	},
-	registerForm: {
-		name: '',
-		email: '',
-		password: '',
-		confirmPassword: '',
-	},
+interface User {
+	id: number
+	email: string
+	role: 'admin' | 'customer'
+}
+
+interface LoginForm {
+	email: string
+	password: string
+}
+
+interface RegisterForm {
+	name: string
+	email: string
+	password: string
+	confirmPassword: string
+}
+
+interface AuthState {
+	// State
+	user: User | null
+	isAuthenticated: boolean
+	token: string | null
+	isLoading: boolean
+	error: string | null
+	loginForm: LoginForm
+	registerForm: RegisterForm
+
+	// Actions
+	setLoginForm: (form: LoginForm) => void
+	setRegisterForm: (form: RegisterForm) => void
+	login: () => Promise<User | null>
+	register: () => Promise<User | null>
+	logout: () => void
+	clearError: () => void
 }
 
 export const useAuthStore = create<AuthState>()(
 	devtools(
 		persist(
 			(set, get) => ({
-				...initialState,
-				setToken: (token) => set({ token }),
-				setUser: (user) => set({ user }),
-				setLoading: (isLoading) => set({ isLoading }),
-				setError: (error) => set({ error }),
-				logout: () => {
-					// Limpiar el token de las cookies
-					document.cookie =
-						'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;'
-
-					set({
-						user: null,
-						isAuthenticated: false,
-						token: null,
-						error: null,
-					})
-
-					// Redirigir al login
-					window.location.href = '/auth/login'
+				// Initial state
+				user: null,
+				isAuthenticated: false,
+				token: null,
+				isLoading: false,
+				error: null,
+				loginForm: {
+					email: '',
+					password: '',
 				},
-				// Acciones para el formulario de login
-				setLoginForm: (form) =>
-					set((state) => ({
-						loginForm: { ...state.loginForm, ...form },
-					})),
-				resetLoginForm: () =>
-					set({
-						loginForm: initialState.loginForm,
-					}),
+				registerForm: {
+					name: '',
+					email: '',
+					password: '',
+					confirmPassword: '',
+				},
+
+				// Actions
+				setLoginForm: (form) => set({ loginForm: form }),
+
+				setRegisterForm: (form) => set({ registerForm: form }),
+
 				login: async () => {
 					const { loginForm } = get()
+					console.log('Store login called with:', loginForm)
 					set({ isLoading: true, error: null })
 
 					try {
@@ -62,15 +75,20 @@ export const useAuthStore = create<AuthState>()(
 							loginForm.email,
 							loginForm.password
 						)
+						console.log('Login API response:', response)
 
 						// Guardar el token en las cookies
-						document.cookie = `auth-token=${response.access_token}; path=/; max-age=86400; secure; samesite=strict`
+						if (typeof document !== 'undefined') {
+							document.cookie = `auth-token=${response.access_token}; path=/; max-age=86400; secure; samesite=strict`
+						}
 
 						set({
 							user: response.user,
+							token: response.access_token,
 							isAuthenticated: true,
 							isLoading: false,
 							loginForm: { email: '', password: '' },
+							error: null,
 						})
 
 						console.log(
@@ -90,49 +108,80 @@ export const useAuthStore = create<AuthState>()(
 						throw error
 					}
 				},
-				// Acciones para el formulario de registro
-				setRegisterForm: (form) =>
-					set((state) => ({
-						registerForm: { ...state.registerForm, ...form },
-					})),
-				resetRegisterForm: () =>
-					set({
-						registerForm: initialState.registerForm,
-					}),
+
 				register: async () => {
 					const { registerForm } = get()
-					if (
-						registerForm.password !== registerForm.confirmPassword
-					) {
-						set({ error: 'Las contraseñas no coinciden' })
-						return
-					}
 					set({ isLoading: true, error: null })
+
 					try {
-						const response = await authApi.register({
-							email: registerForm.email,
-							password: registerForm.password,
-							role: 'user',
+						if (
+							registerForm.password !==
+							registerForm.confirmPassword
+						) {
+							throw new Error('Las contraseñas no coinciden')
+						}
+
+						const response = await authApi.register(
+							registerForm.name,
+							registerForm.email,
+							registerForm.password
+						)
+
+						set({
+							user: response.user,
+							token: response.access_token,
+							isAuthenticated: true,
+							isLoading: false,
+							registerForm: {
+								name: '',
+								email: '',
+								password: '',
+								confirmPassword: '',
+							},
+							error: null,
 						})
-						if (response.error) throw new Error(response.error)
-						set({ token: response.token, user: response.user })
+
+						return response.user
 					} catch (error) {
-						console.log('Error en el registro:', error)
+						console.error('Register error:', error)
 						set({
 							error:
 								error instanceof Error
 									? error.message
-									: 'Error al registrarse',
+									: 'Error de registro',
+							isLoading: false,
 						})
-					} finally {
-						set({ isLoading: false })
+						throw error
 					}
 				},
+
+				logout: () => {
+					// Limpiar el token de las cookies
+					if (typeof document !== 'undefined') {
+						document.cookie =
+							'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;'
+					}
+
+					set({
+						user: null,
+						isAuthenticated: false,
+						token: null,
+						error: null,
+					})
+
+					// Redirigir al login
+					if (typeof window !== 'undefined') {
+						window.location.href = '/auth/login'
+					}
+				},
+
+				clearError: () => set({ error: null }),
 			}),
 			{
 				name: 'auth-storage',
 				partialize: (state) => ({
 					user: state.user,
+					token: state.token,
 					isAuthenticated: state.isAuthenticated,
 				}),
 			}

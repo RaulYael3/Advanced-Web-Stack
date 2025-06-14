@@ -25,11 +25,11 @@ export interface AuthActions {
 	setLoading: (isLoading: boolean) => void
 	setError: (error: string | null) => void
 	logout: () => void
-	// Acciones para el formulario de login
+
 	setLoginForm: (form: Partial<AuthState['loginForm']>) => void
 	resetLoginForm: () => void
 	login: () => Promise<void>
-	// Acciones para el formulario de registro
+
 	setRegisterForm: (form: Partial<AuthState['registerForm']>) => void
 	resetRegisterForm: () => void
 	register: () => Promise<void>

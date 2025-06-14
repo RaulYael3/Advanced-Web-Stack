@@ -34,7 +34,7 @@ interface Seat {
 	code?: string // Para compatibilidad con el formato anterior
 }
 
-interface IndividualSeat {
+export interface IndividualSeat {
 	id: string
 	seatNumber: number
 	row: string
@@ -142,7 +142,7 @@ export const useTicketStore = create<TicketState>()(
 				)
 				set({ isLoading: true, error: null })
 				try {
-					// Cargar solo los asientos de la función específica
+					// Cargar asientos individuales para la función específica
 					const seatsResponse = await fetch(
 						`${
 							process.env.NEXT_PUBLIC_API_URL ||
@@ -157,27 +157,19 @@ export const useTicketStore = create<TicketState>()(
 						throw new Error('Failed to fetch seats for screening')
 					}
 
-					const screeningSeats = await seatsResponse.json()
-					console.log('Seats for screening loaded:', screeningSeats)
+					const seats = await seatsResponse.json()
+					console.log('Individual seats loaded for screening:', seats)
 
-					// Convertir al formato esperado
-					const formattedSeats = screeningSeats.map((seat: any) => ({
+					// Los asientos ya vienen en el formato correcto
+					const formattedSeats = seats.map((seat: any) => ({
 						id: seat.id,
-						seatNumber: seat.seatNumber || seat.seat_number || 1,
+						seatNumber: seat.seatNumber,
 						row: seat.row,
-						isOccupied:
-							seat.isOccupied || seat.is_occupied || false,
+						isOccupied: seat.isOccupied,
 						room: seat.room,
-						code:
-							seat.seatNumber?.toString() ||
-							seat.seat_number?.toString() ||
-							'1',
 					}))
 
-					console.log(
-						'Formatted seats for this screening only:',
-						formattedSeats
-					)
+					console.log('Formatted individual seats:', formattedSeats)
 					set({ availableSeats: formattedSeats, isLoading: false })
 				} catch (error) {
 					console.error('Error loading seats for screening:', error)

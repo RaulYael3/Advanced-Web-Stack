@@ -1,13 +1,6 @@
 import { create } from 'zustand'
 import { devtools } from 'zustand/middleware'
-import {
-	roomsApi,
-	seatsApi,
-	Room,
-	Seat,
-	CreateRoomDto,
-	CreateSeatDto,
-} from '../api/rooms.api'
+import { roomsApi, seatsApi, Room, Seat, CreateRoomDto } from '../api/rooms.api'
 
 interface CreateSeatDto {
 	row: string

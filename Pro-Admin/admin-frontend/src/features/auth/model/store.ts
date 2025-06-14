@@ -20,7 +20,7 @@ const initialState = {
 	},
 }
 
-export const useAuthStore = create<AuthState & AuthActions>()(
+export const useAuthStore = create<AuthState>()(
 	devtools(
 		persist(
 			(set, get) => ({
@@ -30,14 +30,19 @@ export const useAuthStore = create<AuthState & AuthActions>()(
 				setLoading: (isLoading) => set({ isLoading }),
 				setError: (error) => set({ error }),
 				logout: () => {
-					// Limpiar cookies
-					authApi.logout()
-					// Limpiar estado
-					set({ ...initialState })
-					// Redirigir a auth
-					if (typeof window !== 'undefined') {
-						window.location.href = '/auth'
-					}
+					// Limpiar el token de las cookies
+					document.cookie =
+						'auth-token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;'
+
+					set({
+						user: null,
+						isAuthenticated: false,
+						token: null,
+						error: null,
+					})
+
+					// Redirigir al login
+					window.location.href = '/auth/login'
 				},
 				// Acciones para el formulario de login
 				setLoginForm: (form) =>
@@ -51,24 +56,38 @@ export const useAuthStore = create<AuthState & AuthActions>()(
 				login: async () => {
 					const { loginForm } = get()
 					set({ isLoading: true, error: null })
-					try {
-						const response = await authApi.login(loginForm)
-						if (
-							response.user === undefined ||
-							response.user === null
-						)
-							throw new Error(response.error)
 
-						set({ token: response.token, user: response.user })
+					try {
+						const response = await authApi.login(
+							loginForm.email,
+							loginForm.password
+						)
+
+						// Guardar el token en las cookies
+						document.cookie = `auth-token=${response.access_token}; path=/; max-age=86400; secure; samesite=strict`
+
+						set({
+							user: response.user,
+							isAuthenticated: true,
+							isLoading: false,
+							loginForm: { email: '', password: '' },
+						})
+
+						console.log(
+							'Login successful, user role:',
+							response.user.role
+						)
+						return response.user
 					} catch (error) {
+						console.error('Login error:', error)
 						set({
 							error:
 								error instanceof Error
 									? error.message
-									: 'Error al iniciar sesión',
+									: 'Error de autenticación',
+							isLoading: false,
 						})
-					} finally {
-						set({ isLoading: false })
+						throw error
 					}
 				},
 				// Acciones para el formulario de registro
@@ -113,10 +132,11 @@ export const useAuthStore = create<AuthState & AuthActions>()(
 			{
 				name: 'auth-storage',
 				partialize: (state) => ({
-					token: state.token,
 					user: state.user,
+					isAuthenticated: state.isAuthenticated,
 				}),
 			}
-		)
+		),
+		{ name: 'auth-store' }
 	)
 )

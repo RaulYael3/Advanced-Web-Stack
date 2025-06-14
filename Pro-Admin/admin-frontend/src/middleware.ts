@@ -2,20 +2,26 @@ import { NextResponse } from 'next/server'
 import type { NextRequest } from 'next/server'
 
 export function middleware(request: NextRequest) {
-	const token = request.cookies.get('auth-token')?.value
-	const isAuthPage = request.nextUrl.pathname.startsWith('/auth')
+	const { pathname } = request.nextUrl
 
-	if (!token && !isAuthPage) {
-		return NextResponse.redirect(new URL('/auth', request.url))
-	}
+	// Verificar si es una ruta del dashboard
+	if (pathname.startsWith('/dashboard')) {
+		// Obtener el token del cookie
+		const token = request.cookies.get('auth-token')?.value
 
-	if (token && isAuthPage) {
-		return NextResponse.redirect(new URL('/dashboard', request.url))
+		// Si no hay token, redirigir al login
+		if (!token) {
+			return NextResponse.redirect(new URL('/auth/login', request.url))
+		}
+
+		// Aquí podrías validar el token y el rol
+		// Por ahora, asumimos que si hay token, está autenticado
+		// La validación del rol se hará en el cliente
 	}
 
 	return NextResponse.next()
 }
 
 export const config = {
-	matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+	matcher: ['/dashboard/:path*'],
 }

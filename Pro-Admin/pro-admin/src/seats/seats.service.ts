@@ -132,37 +132,14 @@ export class SeatsService {
     })
   }
 
-  // Método para obtener asientos específicos de una función
+  // Método para obtener asientos específicos de una función (simplificado)
   async getSeatsForScreening(screeningId: number) {
     console.log('Getting seats for screening ID:', screeningId)
 
     try {
-      // Obtener las salas asociadas a esta función
-      const roomScreenings = await this.seatRepository.manager
-        .createQueryBuilder()
-        .select(['rs.room_id as roomId'])
-        .from('room_screenings', 'rs')
-        .where('rs.screening_id = :screeningId', { screeningId })
-        .getRawMany()
-
-      const roomIds = roomScreenings.map((rs) => rs.roomId)
-      console.log('Room IDs for screening:', roomIds)
-
-      if (roomIds.length === 0) {
-        return []
-      }
-
-      // Obtener todos los asientos de esas salas
-      const seats = await this.seatRepository
-        .createQueryBuilder('seat')
-        .leftJoinAndSelect('seat.room', 'room')
-        .where('seat.room_id IN (:...roomIds)', { roomIds })
-        .orderBy('seat.row', 'ASC')
-        .addOrderBy('seat.seatNumber', 'ASC')
-        .getMany()
-
-      console.log('Found seats for screening:', seats.length)
-      return seats
+      // Por ahora, devolver todos los asientos hasta que arreglemos las relaciones
+      // TODO: Implementar filtrado por screening cuando las tablas estén correctas
+      return await this.findAll()
     } catch (error) {
       console.error('Error getting seats for screening:', error)
       throw error

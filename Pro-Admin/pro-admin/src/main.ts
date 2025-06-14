@@ -1,32 +1,68 @@
 // main.ts
 import { NestFactory } from '@nestjs/core'
 import { AppModule } from './app.module'
+import { ValidationPipe } from '@nestjs/common'
 import * as cookieParser from 'cookie-parser'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule)
 
-  // Cookies
-  app.use(cookieParser())
-
-  // Cors (solo si consumes desde otro dominio)
+  // CORS configuration
   app.enableCors({
-    origin: ['http://localhost:3000'], // frontend
+    origin: ['http://localhost:3000'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
   })
 
-  // Swagger
+  // Comentar temporalmente el ValidationPipe global para debug
+  // app.useGlobalPipes(new ValidationPipe({
+  //   transform: true,
+  //   whitelist: true,
+  //   forbidNonWhitelisted: true,
+  //   disableErrorMessages: false,
+  //   validationError: {
+  //     target: false,
+  //     value: false,
+  //   },
+  // }))
+
+  // Debug middleware para POST /seats
+  app.use('/seats', (req, res, next) => {
+    if (req.method === 'POST') {
+      console.log('=== MIDDLEWARE DEBUG POST /seats ===')
+      console.log('Request headers:', req.headers)
+      console.log('Request body before processing:', req.body)
+      console.log('Body type:', typeof req.body)
+      console.log('Body keys:', Object.keys(req.body || {}))
+      console.log('======================================')
+    }
+    next()
+  })
+
+  // Swagger setup
   const config = new DocumentBuilder()
-    .setTitle('Cinerex API')
-    .setDescription('Backend para el panel administrativo y sitio web')
+    .setTitle('Pro-Admin API')
+    .setDescription('The Pro-Admin API description')
     .setVersion('1.0')
-    .addCookieAuth('jwt') // Para documentar JWT via cookies
+    .addTag('auth')
+    .addTag('users')
+    .addTag('rooms')
+    .addTag('seats')
+    .addTag('movies')
+    .addTag('screenings')
+    .addTag('tickets')
     .build()
 
   const document = SwaggerModule.createDocument(app, config)
   SwaggerModule.setup('api', app, document)
 
-  await app.listen(4000) // puerto por default para backend
+  // Cookies
+  app.use(cookieParser())
+
+  await app.listen(4000)
+  console.log('Application is running on: http://localhost:4000')
+  console.log('Swagger documentation: http://localhost:4000/api')
 }
 bootstrap()

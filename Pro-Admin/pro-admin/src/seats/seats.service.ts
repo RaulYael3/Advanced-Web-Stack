@@ -117,12 +117,6 @@ export class SeatsService {
     })
   }
 
-  async updateSeatOccupancy(seatId: number, isOccupied: boolean) {
-    const seat = await this.findOne(seatId)
-    seat.isOccupied = isOccupied
-    return await this.seatRepository.save(seat)
-  }
-
   // Método simple para obtener todos los asientos con su estado actual
   async getAllSeatsWithOccupancy() {
     return await this.seatRepository.find({

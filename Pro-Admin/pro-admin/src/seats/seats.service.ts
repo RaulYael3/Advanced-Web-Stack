@@ -29,35 +29,38 @@ export class SeatsService {
       const room = await this.roomsService.findOne(createSeatDto.roomId)
       console.log('Room found:', room?.name)
 
-      // Crear el arreglo de asientos individuales
-      const seatArray = []
-      for (let i = 1; i <= seatCount; i++) {
-        seatArray.push({
-          id: i,
-          seatNumber: i,
-          isOccupied: false
-        })
-      }
-
-      // Crear el registro con el arreglo en el campo code
-      const seat = this.seatRepository.create({
-        code: seatArray,
-        row: createSeatDto.row.trim().toUpperCase(),
-        room
+      // Verificar si ya existen asientos en esa fila
+      const existingSeats = await this.seatRepository.find({
+        where: {
+          row: createSeatDto.row.trim().toUpperCase(),
+          room: { id: createSeatDto.roomId }
+        }
       })
 
-      const savedSeat = await this.seatRepository.save(seat)
-      console.log('Seat row created successfully with', seatArray.length, 'seats')
+      if (existingSeats.length > 0) {
+        throw new Error(`La fila ${createSeatDto.row} ya existe en esta sala`)
+      }
+
+      // Crear múltiples asientos individuales
+      const seats: Seat[] = []
+      for (let i = 1; i <= seatCount; i++) {
+        const seat = this.seatRepository.create({
+          seatNumber: i,
+          row: createSeatDto.row.trim().toUpperCase(),
+          isOccupied: false,
+          room
+        })
+        seats.push(seat)
+      }
+
+      const savedSeats = await this.seatRepository.save(seats)
+      console.log('Individual seats created:', savedSeats.length)
 
       return {
-        id: savedSeat.id,
-        code: savedSeat.code,
-        row: savedSeat.row,
-        room: {
-          id: savedSeat.room.id,
-          name: savedSeat.room.name
-        },
-        message: `Fila ${createSeatDto.row} creada con ${seatArray.length} asientos`
+        message: `${savedSeats.length} asientos creados exitosamente en la fila ${createSeatDto.row}`,
+        seats: savedSeats,
+        rowCreated: createSeatDto.row.trim().toUpperCase(),
+        seatCount: savedSeats.length
       }
     } catch (error) {
       console.error('Error in SeatsService.create:', error)
@@ -134,18 +137,6 @@ export class SeatsService {
     console.log('Getting seats for screening ID:', screeningId)
 
     try {
-      // Primero obtener la función y sus salas
-      const screening = await this.seatRepository.manager
-        .createQueryBuilder()
-        .select(['s.id', 's.datetime'])
-        .from('screenings', 's')
-        .where('s.id = :screeningId', { screeningId })
-        .getOne()
-
-      if (!screening) {
-        throw new Error('Screening not found')
-      }
-
       // Obtener las salas asociadas a esta función
       const roomScreenings = await this.seatRepository.manager
         .createQueryBuilder()
@@ -162,18 +153,13 @@ export class SeatsService {
       }
 
       // Obtener todos los asientos de esas salas
-      const seats = await this.seatRepository.find({
-        where: {
-          room: {
-            id: roomIds.length === 1 ? roomIds[0] : ({ $in: roomIds } as any)
-          }
-        },
-        relations: ['room'],
-        order: {
-          row: 'ASC',
-          seatNumber: 'ASC'
-        }
-      })
+      const seats = await this.seatRepository
+        .createQueryBuilder('seat')
+        .leftJoinAndSelect('seat.room', 'room')
+        .where('seat.room_id IN (:...roomIds)', { roomIds })
+        .orderBy('seat.row', 'ASC')
+        .addOrderBy('seat.seatNumber', 'ASC')
+        .getMany()
 
       console.log('Found seats for screening:', seats.length)
       return seats
@@ -185,59 +171,37 @@ export class SeatsService {
 
   // Método para obtener asientos individuales de todas las filas
   async getIndividualSeats() {
-    const seatRows = await this.seatRepository.find({
+    return await this.seatRepository.find({
       relations: ['room'],
       order: {
-        row: 'ASC'
+        row: 'ASC',
+        seatNumber: 'ASC'
       }
     })
-
-    const individualSeats: {
-      id: string
-      seatNumber: number
-      row: string
-      isOccupied: boolean
-      room: any
-      rowId: number
-    }[] = []
-    seatRows.forEach((seatRow) => {
-      if (Array.isArray(seatRow.code)) {
-        seatRow.code.forEach((seat) => {
-          individualSeats.push({
-            id: `${seatRow.row}${seat.seatNumber}`,
-            seatNumber: seat.seatNumber,
-            row: seatRow.row,
-            isOccupied: seat.isOccupied,
-            room: seatRow.room,
-            rowId: seatRow.id
-          })
-        })
-      }
-    })
-
-    return individualSeats
   }
 
-  // Método para actualizar el estado de ocupación de un asiento específico
-  async updateSeatOccupancy(row: string, seatNumber: number, isOccupied: boolean) {
-    const seatRow = await this.seatRepository.findOne({
-      where: { row: row.toUpperCase() },
+  // Método para actualizar el estado de ocupación de un asiento específico por ID
+  async updateSeatOccupancy(seatId: number, isOccupied: boolean) {
+    const seat = await this.findOne(seatId)
+    seat.isOccupied = isOccupied
+    return await this.seatRepository.save(seat)
+  }
+
+  // Método adicional para actualizar por fila y número de asiento
+  async updateSeatOccupancyByRowAndNumber(row: string, seatNumber: number, isOccupied: boolean) {
+    const seat = await this.seatRepository.findOne({
+      where: {
+        row: row.toUpperCase(),
+        seatNumber: seatNumber
+      },
       relations: ['room']
     })
 
-    if (!seatRow) {
-      throw new Error(`Row ${row} not found`)
+    if (!seat) {
+      throw new Error(`Seat ${seatNumber} not found in row ${row}`)
     }
 
-    if (Array.isArray(seatRow.code)) {
-      const seatIndex = seatRow.code.findIndex((seat) => seat.seatNumber === seatNumber)
-      if (seatIndex !== -1) {
-        seatRow.code[seatIndex].isOccupied = isOccupied
-        await this.seatRepository.save(seatRow)
-        return seatRow.code[seatIndex]
-      }
-    }
-
-    throw new Error(`Seat ${seatNumber} not found in row ${row}`)
+    seat.isOccupied = isOccupied
+    return await this.seatRepository.save(seat)
   }
 }

@@ -30,11 +30,11 @@ export class SeatsController {
       forbidNonWhitelisted: false
     })
   )
-  @ApiOperation({ summary: 'Crear fila de asientos' })
-  @ApiResponse({ status: 201, description: 'Fila de asientos creada exitosamente' })
+  @ApiOperation({ summary: 'Crear asientos individuales en una fila' })
+  @ApiResponse({ status: 201, description: 'Asientos creados exitosamente' })
   @ApiResponse({ status: 400, description: 'Datos inválidos' })
   async create(@Body() createSeatDto: CreateSeatDto) {
-    console.log('=== BACKEND CREATE SEAT ROW ===')
+    console.log('=== BACKEND CREATE INDIVIDUAL SEATS ===')
     console.log('DTO received:', createSeatDto)
 
     try {
@@ -48,10 +48,10 @@ export class SeatsController {
   }
 
   @Get()
-  @ApiOperation({ summary: 'Obtener todos los asientos' })
+  @ApiOperation({ summary: 'Obtener todos los asientos individuales' })
   findAll(@Query('roomId') roomId?: string) {
     if (roomId) {
-      console.log('Finding seats for room:', roomId)
+      console.log('Finding individual seats for room:', roomId)
       return this.seatsService.findByRoom(+roomId)
     }
     return this.seatsService.findAll()
@@ -97,19 +97,19 @@ export class SeatsController {
     return this.seatsService.getSeatsForScreening(+screeningId)
   }
 
-  @Get('individual')
-  @ApiOperation({ summary: 'Obtener todos los asientos individuales' })
-  async getIndividualSeats() {
-    return this.seatsService.getIndividualSeats()
+  @Patch(':id/occupancy')
+  @ApiOperation({ summary: 'Actualizar estado de ocupación de un asiento por ID' })
+  async updateSeatOccupancyById(@Param('id') id: string, @Body('isOccupied') isOccupied: boolean) {
+    return this.seatsService.updateSeatOccupancy(+id, isOccupied)
   }
 
   @Patch(':row/:seatNumber/occupancy')
-  @ApiOperation({ summary: 'Actualizar estado de ocupación de un asiento' })
-  async updateSeatOccupancy(
+  @ApiOperation({ summary: 'Actualizar estado de ocupación por fila y número' })
+  async updateSeatOccupancyByRowAndNumber(
     @Param('row') row: string,
     @Param('seatNumber') seatNumber: string,
     @Body('isOccupied') isOccupied: boolean
   ) {
-    return this.seatsService.updateSeatOccupancy(row, +seatNumber, isOccupied)
+    return this.seatsService.updateSeatOccupancyByRowAndNumber(row, +seatNumber, isOccupied)
   }
 }

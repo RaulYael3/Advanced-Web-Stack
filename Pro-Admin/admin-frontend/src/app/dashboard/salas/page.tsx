@@ -1,8 +1,14 @@
 'use client'
 
-import { useEffect, useMemo } from 'react'
+import { useEffect } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+	Card,
+	CardContent,
+	CardDescription,
+	CardHeader,
+	CardTitle,
+} from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
@@ -15,7 +21,7 @@ import {
 	DialogTrigger,
 } from '@/components/ui/dialog'
 import { useRoomStore } from '@/features/rooms/model/store'
-import { Plus, Edit, Trash2, MapPin, Armchair } from 'lucide-react'
+import { Plus, Edit, Trash2, Users, MapPin, Armchair } from 'lucide-react'
 
 export default function SalasPage() {
 	const {
@@ -46,10 +52,6 @@ export default function SalasPage() {
 	useEffect(() => {
 		loadRooms()
 	}, [loadRooms])
-
-	const seatsNumber = useMemo(() => {
-		return seats.reduce((acc, seat) => acc + Number(seat.code), 0)
-	}, [seats])
 
 	return (
 		<div className='flex-1 space-y-6 p-8 pt-6 '>
@@ -121,13 +123,6 @@ export default function SalasPage() {
 				</Dialog>
 			</div>
 
-			{/* Error Message */}
-			{error && (
-				<div className='bg-red-50 border border-red-200 rounded-lg p-4'>
-					<p className='text-red-800 text-sm'>{error}</p>
-				</div>
-			)}
-
 			{/* Rooms Grid */}
 			{isLoading && rooms.length === 0 ? (
 				<div className='flex items-center justify-center h-64'>
@@ -176,7 +171,7 @@ export default function SalasPage() {
 										Asientos
 									</span>
 									<span className='text-sm font-medium text-gray-900'>
-										{seatsNumber || 0}
+										{room.seats?.length || 0}
 									</span>
 								</div>
 								<Button
@@ -260,11 +255,11 @@ export default function SalasPage() {
 							Gestionar Asientos - {selectedRoom?.name}
 						</DialogTitle>
 						<DialogDescription className='text-gray-600'>
-							Agrega y gestiona los asientos de esta sala.
+							Agrega filas de asientos para esta sala.
 						</DialogDescription>
 					</DialogHeader>
 					<div className='grid gap-6 py-4'>
-						{/* Add Seat Form */}
+						{/* Add Seat Row Form */}
 						<div className='grid grid-cols-3 gap-4 p-4 border border-gray-200 rounded-lg'>
 							<div className='space-y-2'>
 								<Label
@@ -275,13 +270,25 @@ export default function SalasPage() {
 								</Label>
 								<Input
 									id='seat-row'
-									value={seatFormData.row}
-									onChange={(e) =>
-										setSeatFormData({ row: e.target.value })
-									}
+									value={seatFormData.row || ''}
+									onChange={(e) => {
+										console.log(
+											'Row input changed to:',
+											e.target.value
+										)
+										setSeatFormData({
+											row: e.target.value.toUpperCase(),
+										})
+									}}
 									className='border-gray-300 focus:border-blue-500 focus:ring-blue-500'
 									placeholder='A, B, C...'
+									maxLength={1}
 								/>
+								{!seatFormData.row && (
+									<p className='text-xs text-red-500'>
+										La fila es requerida
+									</p>
+								)}
 							</div>
 							<div className='space-y-2'>
 								<Label
@@ -294,76 +301,127 @@ export default function SalasPage() {
 									id='seat-count'
 									type='number'
 									min='1'
-									value={seatFormData.seatCount}
-									onChange={(e) =>
+									max='50'
+									value={seatFormData.seatCount || 1}
+									onChange={(e) => {
+										const value =
+											parseInt(e.target.value) || 1
+										console.log(
+											'SeatCount input changed to:',
+											value
+										)
 										setSeatFormData({
-											seatCount:
-												parseInt(e.target.value) || 1,
+											seatCount: Math.max(1, value),
 										})
-									}
+									}}
 									className='border-gray-300 focus:border-blue-500 focus:ring-blue-500'
 									placeholder='10'
 								/>
+								{seatFormData.seatCount < 1 && (
+									<p className='text-xs text-red-500'>
+										Mínimo 1 asiento
+									</p>
+								)}
 							</div>
 							<div className='space-y-2'>
 								<Label className='text-gray-700 font-medium'>
 									Acción
 								</Label>
 								<Button
-									onClick={createSeat}
-									disabled={isLoading}
-									className='w-full bg-green-600 hover:bg-green-700 text-white'
+									onClick={() => {
+										console.log(
+											'Create button clicked with data:',
+											seatFormData
+										)
+										createSeat()
+									}}
+									disabled={
+										isLoading ||
+										!seatFormData.row ||
+										seatFormData.seatCount < 1
+									}
+									className='w-full bg-green-600 hover:bg-green-700 text-white disabled:opacity-50'
 								>
 									<Plus className='h-4 w-4 mr-2' />
-									Criar Fila
+									{isLoading ? 'Creando...' : 'Crear Fila'}
 								</Button>
 							</div>
 						</div>
 
-						{/* Seats Grid */}
+						{/* Seats Display by Rows */}
 						<div>
 							<h3 className='text-lg font-medium text-gray-900 mb-4'>
 								Asientos Actuales ({seats.length})
 							</h3>
-							<div className='space-y-3'>
-								{Object.entries(
-									seats.reduce((acc, seat) => {
-										if (!acc[seat.row]) acc[seat.row] = []
-										acc[seat.row].push(seat)
-										return acc
-									}, {} as Record<string, any[]>)
-								).map(([row, rowSeats]) => (
-									<div
-										key={row}
-										className='p-3 border border-gray-200 rounded-lg'
-									>
-										<div className='flex items-center justify-between mb-2'>
-											<span className='font-medium'>
-												Fila {row}
-											</span>
-											<span className='text-sm text-gray-600'>
-												{rowSeats.length} asientos
-											</span>
-										</div>
-										<div className='flex gap-1 flex-wrap'>
-											{rowSeats
-												.sort(
-													(a, b) =>
-														a.seatNumber -
-														b.seatNumber
-												)
-												.map((seat) => (
-													<div
-														key={seat.id}
-														className='w-8 h-8 flex items-center justify-center text-xs border border-gray-300 rounded bg-gray-50'
-													>
-														{seat.seatNumber}
-													</div>
-												))}
-										</div>
-									</div>
-								))}
-							</div>
+							{seats.length > 0 ? (
+								<div className='space-y-3'>
+									{Object.entries(
+										seats.reduce((acc, seat) => {
+											if (!acc[seat.row])
+												acc[seat.row] = []
+											acc[seat.row].push(seat)
+											return acc
+										}, {} as Record<string, any[]>)
+									)
+										.sort(([a], [b]) => a.localeCompare(b))
+										.map(([row, rowSeats]) => (
+											<div
+												key={row}
+												className='p-3 border border-gray-200 rounded-lg'
+											>
+												<div className='flex items-center justify-between mb-2'>
+													<span className='font-medium text-gray-900'>
+														Fila {row}
+													</span>
+													<span className='text-sm text-gray-600'>
+														{rowSeats.length}{' '}
+														asientos
+													</span>
+												</div>
+												<div className='flex gap-1 flex-wrap'>
+													{rowSeats
+														.sort(
+															(a, b) =>
+																a.seatNumber -
+																b.seatNumber
+														)
+														.map((seat) => (
+															<div
+																key={seat.id}
+																className='relative group'
+															>
+																<div className='w-8 h-8 flex items-center justify-center text-xs border border-gray-300 rounded bg-gray-50'>
+																	{
+																		seat.seatNumber
+																	}
+																</div>
+																<Button
+																	variant='ghost'
+																	size='sm'
+																	onClick={() =>
+																		deleteSeat(
+																			seat.id
+																		)
+																	}
+																	className='absolute -top-1 -right-1 h-4 w-4 p-0 bg-red-500 hover:bg-red-600 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity'
+																>
+																	<Trash2 className='h-2 w-2' />
+																</Button>
+															</div>
+														))}
+												</div>
+											</div>
+										))}
+								</div>
+							) : (
+								<div className='text-center py-8 text-gray-500'>
+									<Armchair className='h-12 w-12 mx-auto mb-2 opacity-50' />
+									<p>No hay asientos configurados</p>
+									<p className='text-sm'>
+										Agrega una fila para comenzar
+									</p>
+								</div>
+							)}
 						</div>
 					</div>
 					<DialogFooter>

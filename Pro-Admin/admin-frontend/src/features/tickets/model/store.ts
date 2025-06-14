@@ -137,31 +137,31 @@ export const useTicketStore = create<TicketState>()(
 
 			loadAvailableSeats: async (screeningId: number) => {
 				console.log(
-					'Loading all seats (not filtered by screening):',
+					'Loading seats for specific screening:',
 					screeningId
 				)
 				set({ isLoading: true, error: null })
 				try {
-					// Cargar TODOS los asientos, siempre
+					// Cargar solo los asientos de la función específica
 					const seatsResponse = await fetch(
 						`${
 							process.env.NEXT_PUBLIC_API_URL ||
 							'http://localhost:4000'
-						}/seats`,
+						}/seats/screening/${screeningId}`,
 						{
 							credentials: 'include',
 						}
 					)
 
 					if (!seatsResponse.ok) {
-						throw new Error('Failed to fetch seats')
+						throw new Error('Failed to fetch seats for screening')
 					}
 
-					const allSeats = await seatsResponse.json()
-					console.log('All seats loaded (always all):', allSeats)
+					const screeningSeats = await seatsResponse.json()
+					console.log('Seats for screening loaded:', screeningSeats)
 
-					// Convertir al formato esperado sin filtrar
-					const formattedSeats = allSeats.map((seat: any) => ({
+					// Convertir al formato esperado
+					const formattedSeats = screeningSeats.map((seat: any) => ({
 						id: seat.id,
 						seatNumber: seat.seatNumber || seat.seat_number || 1,
 						row: seat.row,
@@ -175,13 +175,16 @@ export const useTicketStore = create<TicketState>()(
 					}))
 
 					console.log(
-						'All formatted seats (no filtering):',
+						'Formatted seats for this screening only:',
 						formattedSeats
 					)
 					set({ availableSeats: formattedSeats, isLoading: false })
 				} catch (error) {
-					console.error('Error loading seats:', error)
-					set({ error: 'Error al cargar asientos', isLoading: false })
+					console.error('Error loading seats for screening:', error)
+					set({
+						error: 'Error al cargar asientos de la función',
+						isLoading: false,
+					})
 				}
 			},
 

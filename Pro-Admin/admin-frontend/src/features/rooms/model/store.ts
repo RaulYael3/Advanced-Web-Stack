@@ -9,6 +9,12 @@ import {
 	CreateSeatDto,
 } from '../api/rooms.api'
 
+interface CreateSeatDto {
+	row: string
+	seatCount: number
+	roomId: number
+}
+
 interface RoomState {
 	rooms: Room[]
 	selectedRoom: Room | null
@@ -166,35 +172,49 @@ export const useRoomStore = create<RoomState>()(
 			},
 
 			createSeat: async () => {
-				const { seatFormData } = get()
+				const { seatFormData, selectedRoom } = get()
 
-				// Validación antes de enviar
-				if (
-					!seatFormData.row ||
-					!seatFormData.seatCount ||
-					!seatFormData.roomId
-				) {
-					set({ error: 'Todos los campos son requeridos' })
+				console.log('=== CREATE SEAT DEBUG ===')
+				console.log('selectedRoom:', selectedRoom)
+				console.log('seatFormData from store:', seatFormData)
+
+				if (!selectedRoom) {
+					set({ error: 'No hay sala seleccionada' })
 					return
 				}
 
-				console.log('Creating seats with form data:', seatFormData)
+				if (!seatFormData.row?.trim() || !seatFormData.seatCount) {
+					set({ error: 'Fila y cantidad de asientos son requeridos' })
+					return
+				}
+
+				// Crear el objeto en el formato que espera el backend
+				const dataToSend = {
+					code: seatFormData.seatCount.toString(), // Convertir número a string
+					row: seatFormData.row.trim().toUpperCase(),
+					roomId: Number(selectedRoom.id),
+				}
+
+				console.log('Data prepared to send:', dataToSend)
+				console.log('Data types:', {
+					code: typeof dataToSend.code,
+					row: typeof dataToSend.row,
+					roomId: typeof dataToSend.roomId,
+				})
+
 				set({ isLoading: true, error: null })
 
 				try {
-					const result = await seatsApi.create(seatFormData)
-					console.log('Seats created:', result)
+					const result = await seatsApi.create(dataToSend)
+					console.log('Seats created successfully:', result)
 
 					set({
-						isSeatDialogOpen: false,
-						seatFormData: initialSeatFormData,
+						seatFormData: { row: '', seatCount: 1, roomId: 0 },
 						isLoading: false,
 					})
 
-					// Recargar asientos
-					if (seatFormData.roomId) {
-						await get().loadSeats(seatFormData.roomId)
-					}
+					// Recargar asientos de la sala
+					await get().loadSeats(selectedRoom.id)
 				} catch (error) {
 					console.error('Error creating seats:', error)
 					set({

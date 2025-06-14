@@ -21,7 +21,7 @@ interface Screening {
 		room: {
 			id: number
 			name: string
-			seats?: any[]
+			seats?: unknown[]
 		}
 	}[]
 }
@@ -136,31 +136,85 @@ export const useTicketStore = create<TicketState>()(
 			},
 
 			loadAvailableSeats: async (screeningId: number) => {
-				console.log(
-					'Loading seats for specific screening:',
-					screeningId
-				)
+				console.log('Loading seats for screening:', screeningId)
 				set({ isLoading: true, error: null })
 				try {
-					// Cargar asientos individuales para la función específica
+					// Primero obtener la información de la función para saber qué sala usar
+					const screeningResponse = await fetch(
+						`${
+							process.env.NEXT_PUBLIC_API_URL ||
+							'http://localhost:4000'
+						}/screenings/${screeningId}`,
+						{
+							credentials: 'include',
+						}
+					)
+
+					if (!screeningResponse.ok) {
+						console.log(
+							'Screening endpoint failed, using fallback with room ID 1'
+						)
+						// Fallback: usar sala 1 por defecto para testing
+						const seatsResponse = await fetch(
+							`${
+								process.env.NEXT_PUBLIC_API_URL ||
+								'http://localhost:4000'
+							}/seats?roomId=1`,
+							{
+								credentials: 'include',
+							}
+						)
+
+						if (!seatsResponse.ok) {
+							throw new Error('Failed to fetch seats')
+						}
+
+						const seats = await seatsResponse.json()
+						console.log('Seats loaded (fallback):', seats)
+
+						// eslint-disable-next-line @typescript-eslint/no-explicit-any
+						const formattedSeats = seats.map((seat: any) => ({
+							id: seat.id,
+							seatNumber: seat.seatNumber,
+							row: seat.row,
+							isOccupied: seat.isOccupied,
+							room: seat.room,
+						}))
+
+						set({
+							availableSeats: formattedSeats,
+							isLoading: false,
+						})
+						return
+					}
+
+					const screening = await screeningResponse.json()
+					console.log('Screening info:', screening)
+
+					// Obtener el ID de la sala desde el screening
+					const roomId = screening.roomScreenings?.[0]?.room?.id || 1 // Fallback a sala 1
+					console.log('Using room ID:', roomId)
+
+					// Cargar asientos de la sala específica usando el query parameter
 					const seatsResponse = await fetch(
 						`${
 							process.env.NEXT_PUBLIC_API_URL ||
 							'http://localhost:4000'
-						}/seats/screening/${screeningId}`,
+						}/seats?roomId=${roomId}`,
 						{
 							credentials: 'include',
 						}
 					)
 
 					if (!seatsResponse.ok) {
-						throw new Error('Failed to fetch seats for screening')
+						throw new Error('Failed to fetch seats for room')
 					}
 
 					const seats = await seatsResponse.json()
-					console.log('Individual seats loaded for screening:', seats)
+					console.log('Seats loaded for room:', seats)
 
-					// Los asientos ya vienen en el formato correcto
+					// Los asientos ya vienen en el formato correcto del backend
+					// eslint-disable-next-line @typescript-eslint/no-explicit-any
 					const formattedSeats = seats.map((seat: any) => ({
 						id: seat.id,
 						seatNumber: seat.seatNumber,
@@ -172,9 +226,9 @@ export const useTicketStore = create<TicketState>()(
 					console.log('Formatted individual seats:', formattedSeats)
 					set({ availableSeats: formattedSeats, isLoading: false })
 				} catch (error) {
-					console.error('Error loading seats for screening:', error)
+					console.error('Error loading seats:', error)
 					set({
-						error: 'Error al cargar asientos de la función',
+						error: 'Error al cargar asientos',
 						isLoading: false,
 					})
 				}
@@ -189,7 +243,7 @@ export const useTicketStore = create<TicketState>()(
 					for (const seat of selectedSeats) {
 						await ticketsApi.purchaseTicket({
 							screeningId: selectedScreening.id,
-							seatId: seat.id,
+							seatId: Number(seat.id),
 							customerName: customerInfo.name,
 							customerEmail: customerInfo.email,
 						})

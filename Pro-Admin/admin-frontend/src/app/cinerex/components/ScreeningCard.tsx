@@ -1,4 +1,4 @@
-import { Card, CardHeader, CardTitle } from '@/components/ui/card'
+import { CardHeader, CardTitle } from '@/components/ui/card'
 import { Calendar, MapPin } from 'lucide-react'
 
 interface Screening {

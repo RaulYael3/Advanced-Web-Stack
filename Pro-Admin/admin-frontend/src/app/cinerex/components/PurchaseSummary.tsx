@@ -1,4 +1,4 @@
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { IndividualSeat } from '@/features/tickets/model/store'
 
 interface Movie {
@@ -68,7 +68,7 @@ export default function PurchaseSummary({
 						Asientos:
 					</p>
 					<p className='text-brand-dark-600 mt-1'>
-						{seats.map((s) => `${s.row}${s.code}`).join(', ')}
+						{seats.map((s) => `${s.row}${s.seatNumber}`).join(', ')}
 					</p>
 				</div>
 

@@ -19,16 +19,20 @@ export interface Screening {
 		room: {
 			id: number
 			name: string
-			seats: Seat[]
+			seats?: unknown[]
 		}
 	}[]
 }
 
-export interface Seat {
+export interface IndividualSeat {
 	id: number
-	code: string
+	seatNumber: number
 	row: string
-	isOccupied?: boolean
+	isOccupied: boolean
+	room: {
+		id: number
+		name: string
+	}
 }
 
 export interface CreateTicketDto {
@@ -57,59 +61,19 @@ export const ticketsApi = {
 		return response.json()
 	},
 
-	getAllSeats: async (): Promise<IndividualSeat[]> => {
+	getSeatsForRoom: async (roomId: number): Promise<IndividualSeat[]> => {
 		try {
-			const response = await fetch(`${API_URL}/seats`, {
+			const response = await fetch(`${API_URL}/seats?roomId=${roomId}`, {
 				credentials: 'include',
 			})
 
 			if (!response.ok) {
-				throw new Error('Error fetching seats')
+				throw new Error('Error fetching seats for room')
 			}
 
-			const seats = await response.json()
-
-			// Convertir al formato esperado
-			return seats.map((seat: any) => ({
-				id: seat.id,
-				seatNumber: seat.seatNumber || seat.seat_number,
-				row: seat.row,
-				isOccupied: seat.isOccupied || seat.is_occupied || false,
-				room: seat.room,
-			}))
+			return response.json()
 		} catch (error) {
-			console.error('Error fetching all seats:', error)
-			return []
-		}
-	},
-
-	getSeatsForScreening: async (
-		screeningId: number
-	): Promise<IndividualSeat[]> => {
-		try {
-			const response = await fetch(
-				`${API_URL}/seats/screening/${screeningId}`,
-				{
-					credentials: 'include',
-				}
-			)
-
-			if (!response.ok) {
-				throw new Error('Error fetching seats for screening')
-			}
-
-			const seats = await response.json()
-
-			// Convertir al formato esperado
-			return seats.map((seat: any) => ({
-				id: seat.id,
-				seatNumber: seat.seatNumber || seat.seat_number,
-				row: seat.row,
-				isOccupied: seat.isOccupied || seat.is_occupied || false,
-				room: seat.room,
-			}))
-		} catch (error) {
-			console.error('Error fetching seats for screening:', error)
+			console.error('Error fetching seats for room:', error)
 			return []
 		}
 	},

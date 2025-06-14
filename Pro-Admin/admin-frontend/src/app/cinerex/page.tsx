@@ -25,7 +25,7 @@ export default function CinerexPage() {
 		selectedSeats,
 		customerInfo,
 		isLoading,
-		error,
+
 		currentStep,
 		setSelectedMovie,
 		setSelectedScreening,
@@ -122,8 +122,7 @@ export default function CinerexPage() {
 			<SeatGrid
 				seats={availableSeats.map((seat) => ({
 					id: seat.id,
-					seatNumber:
-						seat.seatNumber || parseInt(seat.code as string) || 1,
+					seatNumber: seat.seatNumber,
 					row: seat.row,
 					isOccupied: seat.isOccupied || false,
 				}))}
@@ -210,18 +209,6 @@ export default function CinerexPage() {
 
 	return (
 		<div className='space-y-8'>
-			{error && (
-				<div
-					className='bg-brand-100 border border-transparent rounded-3xl p-6'
-					style={{
-						boxShadow:
-							'inset 6px 6px 20px -10px var(--color-brand-700), inset -6px -6px 20px var(--color-brand-50)',
-					}}
-				>
-					<p className='text-red-600 text-sm font-medium'>{error}</p>
-				</div>
-			)}
-
 			{currentStep === 'movies' && renderMoviesStep()}
 			{currentStep === 'screenings' && renderScreeningsStep()}
 			{currentStep === 'seats' && renderSeatsStep()}

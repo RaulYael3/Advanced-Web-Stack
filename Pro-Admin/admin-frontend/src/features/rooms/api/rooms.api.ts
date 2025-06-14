@@ -19,20 +19,9 @@ export interface CreateRoomDto {
 }
 
 export interface CreateSeatDto {
+	code: string // Cantidad de asientos como string
 	row: string
-	seatCount: number
 	roomId: number
-}
-
-export interface IndividualSeat {
-	id: number
-	seatNumber: number
-	row: string
-	isOccupied: boolean
-	room: {
-		id: number
-		name: string
-	}
 }
 
 export const roomsApi = {
@@ -127,25 +116,70 @@ export const seatsApi = {
 	},
 
 	create: async (data: CreateSeatDto) => {
-		console.log('Creating seats with data:', data)
-		const response = await fetch(`${API_URL}/seats`, {
-			method: 'POST',
-			headers: {
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify(data),
-			credentials: 'include',
+		console.log('=== API CREATE SEATS ===')
+		console.log('Received data:', data)
+		console.log('Data type check:', {
+			code: typeof data.code,
+			row: typeof data.row,
+			roomId: typeof data.roomId,
 		})
 
-		if (!response.ok) {
-			const errorData = await response.json()
-			console.error('Error creating seats:', errorData)
-			throw new Error(errorData.message || 'Error creating seats')
+		// Validar datos antes de enviar
+		if (!data.code || !data.code.trim()) {
+			throw new Error('La cantidad de asientos es requerida')
 		}
 
-		const result = await response.json()
-		console.log('Seats created successfully:', result)
-		return result
+		if (!data.row || !data.row.trim()) {
+			throw new Error('La fila es requerida')
+		}
+
+		if (!data.roomId) {
+			throw new Error('ID de sala es requerido')
+		}
+
+		console.log('Sending to backend:', JSON.stringify(data, null, 2))
+
+		try {
+			const response = await fetch(`${API_URL}/seats`, {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json',
+				},
+				body: JSON.stringify(data),
+				credentials: 'include',
+			})
+
+			console.log('Response status:', response.status)
+
+			if (!response.ok) {
+				const responseText = await response.text()
+				console.error('Error response text:', responseText)
+
+				try {
+					const errorData = JSON.parse(responseText)
+					console.error(
+						'Error creating seats - Parsed error:',
+						errorData
+					)
+					throw new Error(
+						errorData.message ||
+							`Error ${response.status}: ${
+								errorData.error || 'Error creating seats'
+							}`
+					)
+				} catch (parseError) {
+					console.error('Could not parse error response:', parseError)
+					throw new Error(`Error ${response.status}: ${responseText}`)
+				}
+			}
+
+			const result = await response.json()
+			console.log('Seats created successfully:', result)
+			return result
+		} catch (error) {
+			console.error('API call failed:', error)
+			throw error
+		}
 	},
 
 	getForScreening: async (screeningId: number): Promise<IndividualSeat[]> => {

@@ -25,7 +25,11 @@ export const LoginForm = () => {
 		// Verificar si el login fue exitoso
 		const currentUser = useAuthStore.getState().user
 		if (currentUser?.id !== undefined && currentUser?.id !== null) {
-			router.push(user?.role === 'admin' ? '/dashboard' : '/cinerex')
+			if (currentUser.role === 'admin') {
+				router.push('/dashboard')
+			} else {
+				router.push('/cinerex')
+			}
 		}
 	}
 

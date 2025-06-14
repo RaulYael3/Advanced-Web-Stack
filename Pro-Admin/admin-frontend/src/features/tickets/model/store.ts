@@ -236,20 +236,50 @@ export const useTicketStore = create<TicketState>()(
 
 			purchaseTickets: async () => {
 				const { selectedScreening, selectedSeats, customerInfo } = get()
-				if (!selectedScreening || selectedSeats.length === 0) return
+				if (
+					!selectedScreening ||
+					selectedSeats.length === 0 ||
+					!customerInfo.name ||
+					!customerInfo.email
+				) {
+					set({ error: 'Faltan datos para completar la compra' })
+					return
+				}
 
 				set({ isLoading: true, error: null })
 				try {
-					for (const seat of selectedSeats) {
-						await ticketsApi.purchaseTicket({
+					const purchasePromises = selectedSeats.map((seat) =>
+						ticketsApi.purchaseTicket({
 							screeningId: selectedScreening.id,
-							seatId: Number(seat.id),
+							seatId: parseInt(seat.id),
 							customerName: customerInfo.name,
 							customerEmail: customerInfo.email,
 						})
-					}
-					set({ currentStep: 'confirmation', isLoading: false })
+					)
+
+					const results = await Promise.all(purchasePromises)
+					console.log('All tickets purchased:', results)
+
+					// Actualizar los asientos para mostrarlos como ocupados
+					const { availableSeats } = get()
+					const updatedSeats = availableSeats.map((seat) => {
+						const purchasedSeat = selectedSeats.find(
+							(s) => parseInt(s.id) === seat.id
+						)
+						if (purchasedSeat) {
+							return { ...seat, isOccupied: true }
+						}
+						return seat
+					})
+
+					set({
+						availableSeats: updatedSeats,
+						currentStep: 'confirmation',
+						isLoading: false,
+						selectedSeats: [], // Limpiar selección
+					})
 				} catch (error) {
+					console.error('Error purchasing tickets:', error)
 					set({
 						error:
 							error instanceof Error

@@ -79,6 +79,8 @@ export const ticketsApi = {
 	},
 
 	purchaseTicket: async (ticketData: CreateTicketDto) => {
+		console.log('Purchasing ticket:', ticketData)
+
 		const response = await fetch(`${API_URL}/tickets`, {
 			method: 'POST',
 			headers: {
@@ -90,7 +92,22 @@ export const ticketsApi = {
 
 		if (!response.ok) {
 			const errorData = await response.json()
+			console.error('Error purchasing ticket:', errorData)
 			throw new Error(errorData.message || 'Error al comprar boleto')
+		}
+
+		const result = await response.json()
+		console.log('Ticket purchased successfully:', result)
+		return result
+	},
+
+	getCustomerTickets: async (email: string) => {
+		const response = await fetch(`${API_URL}/tickets/customer/${email}`, {
+			credentials: 'include',
+		})
+
+		if (!response.ok) {
+			throw new Error('Error fetching customer tickets')
 		}
 
 		return response.json()

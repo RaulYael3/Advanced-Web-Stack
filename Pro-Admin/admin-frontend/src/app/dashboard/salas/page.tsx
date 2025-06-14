@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useMemo } from 'react'
 import { Button } from '@/components/ui/button'
 import {
 	Card,
@@ -52,6 +52,12 @@ export default function SalasPage() {
 	useEffect(() => {
 		loadRooms()
 	}, [loadRooms])
+
+	const totalSeats = useMemo(() => {
+		return seats.reduce((acc, seat) => {
+			return acc + (Number(seat.code) || 0)
+		}, 0)
+	}, [rooms])
 
 	return (
 		<div className='flex-1 space-y-6 p-8 pt-6 '>
@@ -171,7 +177,7 @@ export default function SalasPage() {
 										Asientos
 									</span>
 									<span className='text-sm font-medium text-gray-900'>
-										{room.seats?.length || 0}
+										{totalSeats || 0}
 									</span>
 								</div>
 								<Button
@@ -351,7 +357,7 @@ export default function SalasPage() {
 						{/* Seats Display by Rows */}
 						<div>
 							<h3 className='text-lg font-medium text-gray-900 mb-4'>
-								Asientos Actuales ({seats.length})
+								Asientos Actuales ({totalSeats})
 							</h3>
 							{seats.length > 0 ? (
 								<div className='space-y-3'>

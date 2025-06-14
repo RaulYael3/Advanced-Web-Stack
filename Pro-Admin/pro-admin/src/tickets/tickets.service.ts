@@ -106,16 +106,39 @@ export class TicketsService {
     }
   }
 
+  async findAll() {
+    console.log('Finding all tickets...')
+    const tickets = await this.ticketRepository.find({
+      relations: ['customer', 'seat', 'seat.room', 'screening', 'screening.movie'],
+      order: { purchaseDate: 'DESC' }
+    })
+    console.log('Total tickets found:', tickets.length)
+    return tickets
+  }
+
   async findByCustomer(customerEmail: string) {
-    return await this.ticketRepository.find({
-      where: { customer: { email: customerEmail } },
+    console.log('Finding tickets for customer email:', customerEmail)
+
+    // Primero buscar el customer
+    const customer = await this.customerRepository.findOne({
+      where: { email: customerEmail }
+    })
+
+    console.log('Customer found:', customer)
+
+    if (!customer) {
+      console.log('No customer found with email:', customerEmail)
+      return []
+    }
+
+    const tickets = await this.ticketRepository.find({
+      where: { customer: { id: customer.id } },
       relations: ['seat', 'seat.room', 'screening', 'screening.movie', 'customer'],
       order: { purchaseDate: 'DESC' }
     })
-  }
 
-  findAll() {
-    return `This action returns all tickets`
+    console.log('Tickets found for customer:', tickets.length)
+    return tickets
   }
 
   findOne(id: number) {

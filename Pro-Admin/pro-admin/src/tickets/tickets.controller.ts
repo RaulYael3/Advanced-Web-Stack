@@ -26,15 +26,19 @@ export class TicketsController {
     }
   }
 
+  @Get()
+  @ApiOperation({ summary: 'Obtener todos los tickets (para debug)' })
+  async findAll() {
+    return this.ticketsService.findAll()
+  }
+
   @Get('customer/:email')
   @ApiOperation({ summary: 'Obtener boletos de un cliente' })
   async findByCustomer(@Param('email') email: string) {
-    return this.ticketsService.findByCustomer(email)
-  }
-
-  @Get()
-  findAll() {
-    return this.ticketsService.findAll()
+    console.log('Finding tickets for customer email:', email)
+    const tickets = await this.ticketsService.findByCustomer(email)
+    console.log('Found tickets:', tickets.length)
+    return tickets
   }
 
   @Get(':id')

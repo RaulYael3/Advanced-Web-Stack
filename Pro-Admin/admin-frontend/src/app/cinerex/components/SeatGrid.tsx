@@ -16,9 +16,6 @@ export default function SeatGrid({
 	selectedSeats,
 	onSeatClick,
 }: SeatGridProps) {
-	console.log('SeatGrid received seats:', seats)
-	console.log('Total seats count:', seats?.length)
-
 	// Verificar si hay asientos
 	if (!seats || seats.length === 0) {
 		return (
@@ -53,9 +50,6 @@ export default function SeatGrid({
 		seatsByRow[row].sort((a, b) => a.seatNumber - b.seatNumber)
 	})
 
-	console.log('Seats organized by row:', seatsByRow)
-	console.log('Sorted rows:', sortedRows)
-
 	return (
 		<div
 			className='bg-brand-100 rounded-3xl p-8'
@@ -64,16 +58,6 @@ export default function SeatGrid({
 					'-6px -6px 20px var(--color-brand-50), 6px 6px 20px -10px var(--color-brand-700)',
 			}}
 		>
-			{/* Debug info */}
-			<div className='mb-4 p-2 bg-yellow-100 rounded text-xs'>
-				<p>Debug: {seats.length} asientos individuales</p>
-				<p>Filas: {sortedRows.join(', ')}</p>
-				<p>
-					Muestra de datos:{' '}
-					{JSON.stringify(seats.slice(0, 2), null, 2)}
-				</p>
-			</div>
-
 			{/* Pantalla */}
 			<div className='text-center mb-12'>
 				<div

@@ -1,3 +1,5 @@
+import { IndividualSeat } from '@/features/tickets/model/store'
+
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000'
 
 export interface Room {
@@ -116,14 +118,6 @@ export const seatsApi = {
 	},
 
 	create: async (data: CreateSeatDto) => {
-		console.log('=== API CREATE SEATS ===')
-		console.log('Received data:', data)
-		console.log('Data type check:', {
-			code: typeof data.code,
-			row: typeof data.row,
-			roomId: typeof data.roomId,
-		})
-
 		// Validar datos antes de enviar
 		if (!data.code || !data.code.trim()) {
 			throw new Error('La cantidad de asientos es requerida')
@@ -136,8 +130,6 @@ export const seatsApi = {
 		if (!data.roomId) {
 			throw new Error('ID de sala es requerido')
 		}
-
-		console.log('Sending to backend:', JSON.stringify(data, null, 2))
 
 		try {
 			const response = await fetch(`${API_URL}/seats`, {

@@ -33,7 +33,7 @@ export default function CinerexPage() {
 		setCustomerInfo,
 		setCurrentStep,
 		loadMovies,
-		loadScreenings,
+
 		loadAvailableSeats,
 		purchaseTickets,
 		resetSelection,

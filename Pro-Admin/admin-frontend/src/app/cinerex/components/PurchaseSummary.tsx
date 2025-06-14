@@ -1,4 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { IndividualSeat } from '@/features/tickets/model/store'
 
 interface Movie {
 	name: string
@@ -8,15 +9,10 @@ interface Screening {
 	datetime: string
 }
 
-interface Seat {
-	row: string
-	code: string
-}
-
 interface PurchaseSummaryProps {
 	movie?: Movie
 	screening?: Screening
-	seats: Seat[]
+	seats: IndividualSeat[]
 	pricePerTicket?: number
 }
 

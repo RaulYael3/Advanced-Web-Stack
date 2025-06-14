@@ -1,9 +1,6 @@
 'use client'
 
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
+import { useState } from 'react'
 
 interface CustomerInfo {
 	name: string
@@ -23,6 +20,32 @@ export default function CustomerForm({
 	onPurchase,
 	isLoading,
 }: CustomerFormProps) {
+	const [errors, setErrors] = useState<{ name?: string; email?: string }>({})
+
+	const validateForm = () => {
+		const newErrors: { name?: string; email?: string } = {}
+
+		if (!customerInfo.name.trim()) {
+			newErrors.name = 'El nombre es requerido'
+		}
+
+		if (!customerInfo.email.trim()) {
+			newErrors.email = 'El email es requerido'
+		} else if (!/\S+@\S+\.\S+/.test(customerInfo.email)) {
+			newErrors.email = 'Email inválido'
+		}
+
+		setErrors(newErrors)
+		return Object.keys(newErrors).length === 0
+	}
+
+	const handleSubmit = (e: React.FormEvent) => {
+		e.preventDefault()
+		if (validateForm()) {
+			onPurchase()
+		}
+	}
+
 	return (
 		<div
 			className='bg-brand-100 rounded-3xl p-6'
@@ -31,21 +54,17 @@ export default function CustomerForm({
 					'-6px -6px 20px var(--color-brand-50), 6px 6px 20px -10px var(--color-brand-700)',
 			}}
 		>
-			<CardHeader className='p-0 pb-6'>
-				<CardTitle className='text-brand-dark-800 text-xl'>
-					Datos del Cliente
-				</CardTitle>
-			</CardHeader>
-			<CardContent className='p-0 space-y-6'>
+			<h3 className='text-xl font-semibold text-brand-dark-800 mb-6'>
+				Información del Cliente
+			</h3>
+
+			<form onSubmit={handleSubmit} className='space-y-4'>
 				<div>
-					<Label
-						htmlFor='name'
-						className='text-brand-dark-700 font-medium mb-2 block'
-					>
+					<label className='block text-sm font-medium text-brand-dark-700 mb-2'>
 						Nombre Completo
-					</Label>
-					<Input
-						id='name'
+					</label>
+					<input
+						type='text'
 						value={customerInfo.name}
 						onChange={(e) =>
 							onCustomerInfoChange({
@@ -53,23 +72,26 @@ export default function CustomerForm({
 								name: e.target.value,
 							})
 						}
-						placeholder='Tu nombre completo'
-						className='border-none bg-transparent text-brand-dark-700 p-4 rounded-2xl'
+						className='w-full p-3 border-none bg-transparent text-brand-dark-700 rounded-xl'
 						style={{
 							boxShadow:
-								'inset 6px 6px 20px -15px var(--color-brand-700), inset -6px -6px 20px var(--color-brand-50)',
+								'inset 4px 4px 12px -6px var(--color-brand-700), inset -4px -4px 12px var(--color-brand-50)',
 						}}
+						placeholder='Tu nombre completo'
+						disabled={isLoading}
 					/>
+					{errors.name && (
+						<p className='text-red-500 text-xs mt-1'>
+							{errors.name}
+						</p>
+					)}
 				</div>
+
 				<div>
-					<Label
-						htmlFor='email'
-						className='text-brand-dark-700 font-medium mb-2 block'
-					>
+					<label className='block text-sm font-medium text-brand-dark-700 mb-2'>
 						Email
-					</Label>
-					<Input
-						id='email'
+					</label>
+					<input
 						type='email'
 						value={customerInfo.email}
 						onChange={(e) =>
@@ -78,28 +100,33 @@ export default function CustomerForm({
 								email: e.target.value,
 							})
 						}
-						placeholder='tu@email.com'
-						className='border-none bg-transparent text-brand-dark-700 p-4 rounded-2xl'
+						className='w-full p-3 border-none bg-transparent text-brand-dark-700 rounded-xl'
 						style={{
 							boxShadow:
-								'inset 6px 6px 20px -15px var(--color-brand-700), inset -6px -6px 20px var(--color-brand-50)',
+								'inset 4px 4px 12px -6px var(--color-brand-700), inset -4px -4px 12px var(--color-brand-50)',
 						}}
+						placeholder='tu@email.com'
+						disabled={isLoading}
 					/>
+					{errors.email && (
+						<p className='text-red-500 text-xs mt-1'>
+							{errors.email}
+						</p>
+					)}
 				</div>
-				<Button
-					className='w-full border-none bg-transparent text-brand-dark-700 hover:bg-brand-200 py-4 rounded-2xl font-bold text-lg'
-					onClick={onPurchase}
-					disabled={
-						!customerInfo.name || !customerInfo.email || isLoading
-					}
+
+				<button
+					type='submit'
+					disabled={isLoading}
+					className='w-full py-4 mt-8 border-none bg-transparent text-brand-dark-700 hover:bg-brand-200 rounded-2xl font-semibold transition-colors disabled:opacity-50'
 					style={{
 						boxShadow:
 							'-6px -6px 20px var(--color-brand-50), 6px 6px 20px -10px var(--color-brand-700)',
 					}}
 				>
 					{isLoading ? 'Procesando...' : 'Comprar Boletos'}
-				</Button>
-			</CardContent>
+				</button>
+			</form>
 		</div>
 	)
 }

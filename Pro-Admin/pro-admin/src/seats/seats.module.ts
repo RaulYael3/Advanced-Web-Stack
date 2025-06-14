@@ -9,6 +9,6 @@ import { RoomsModule } from '../rooms/rooms.module'
   imports: [TypeOrmModule.forFeature([Seat]), forwardRef(() => RoomsModule)],
   controllers: [SeatsController],
   providers: [SeatsService],
-  exports: [SeatsService]
+  exports: [SeatsService, TypeOrmModule]
 })
 export class SeatsModule {}

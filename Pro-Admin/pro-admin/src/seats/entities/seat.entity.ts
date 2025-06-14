@@ -7,14 +7,15 @@ export class Seat {
   @PrimaryGeneratedColumn()
   id: number
 
-  @Column()
-  seatNumber: number // Número del asiento (1, 2, 3...)
+  @Column('json')
+  code: Array<{
+    id: number
+    seatNumber: number
+    isOccupied: boolean
+  }>
 
   @Column()
-  row: string // Fila (A, B, C...)
-
-  @Column({ default: false })
-  isOccupied: boolean // Estado de ocupación
+  row: string
 
   @ManyToOne(() => Room, (room) => room.seats)
   @JoinColumn({ name: 'room_id' })

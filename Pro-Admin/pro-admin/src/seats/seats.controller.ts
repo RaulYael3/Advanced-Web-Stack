@@ -17,26 +17,32 @@ import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger'
 
 @ApiTags('seats')
 @Controller('seats')
-@UsePipes(new ValidationPipe({ transform: true }))
 export class SeatsController {
   constructor(private readonly seatsService: SeatsService) {
-    console.log('SeatsController instantiated with service:', !!seatsService)
+    console.log('SeatsController instantiated')
   }
 
   @Post()
-  @ApiOperation({ summary: 'Crear un nuevo asiento' })
-  @ApiResponse({ status: 201, description: 'Asiento creado exitosamente' })
+  @UsePipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true,
+      forbidNonWhitelisted: false
+    })
+  )
+  @ApiOperation({ summary: 'Crear fila de asientos' })
+  @ApiResponse({ status: 201, description: 'Fila de asientos creada exitosamente' })
   @ApiResponse({ status: 400, description: 'Datos inválidos' })
   async create(@Body() createSeatDto: CreateSeatDto) {
-    console.log('SeatsController.create called with:', createSeatDto)
-    console.log('Service available:', !!this.seatsService)
+    console.log('=== BACKEND CREATE SEAT ROW ===')
+    console.log('DTO received:', createSeatDto)
 
     try {
       const result = await this.seatsService.create(createSeatDto)
-      console.log('Controller result:', result)
+      console.log('Controller success result:', result)
       return result
     } catch (error) {
-      console.error('Error in controller:', error)
+      console.error('Controller error:', error)
       throw error
     }
   }
@@ -65,7 +71,7 @@ export class SeatsController {
   }
 
   @Patch(':id')
-  @ApiOperation({ summary: 'Actualizar un asiento' })
+  @ApiOperation({ summary: 'Actualizar un asiento individual' })
   update(@Param('id') id: string, @Body() updateSeatDto: UpdateSeatDto) {
     return this.seatsService.update(+id, updateSeatDto)
   }
@@ -81,5 +87,29 @@ export class SeatsController {
   findByRoom(@Param('roomId') roomId: string) {
     console.log('Finding seats for room ID:', roomId)
     return this.seatsService.findByRoom(+roomId)
+  }
+
+  @Get('screening/:screeningId')
+  @ApiOperation({ summary: 'Obtener asientos para una función específica' })
+  @ApiResponse({ status: 200, description: 'Asientos de la función' })
+  async getSeatsForScreening(@Param('screeningId') screeningId: string) {
+    console.log('Getting seats for screening:', screeningId)
+    return this.seatsService.getSeatsForScreening(+screeningId)
+  }
+
+  @Get('individual')
+  @ApiOperation({ summary: 'Obtener todos los asientos individuales' })
+  async getIndividualSeats() {
+    return this.seatsService.getIndividualSeats()
+  }
+
+  @Patch(':row/:seatNumber/occupancy')
+  @ApiOperation({ summary: 'Actualizar estado de ocupación de un asiento' })
+  async updateSeatOccupancy(
+    @Param('row') row: string,
+    @Param('seatNumber') seatNumber: string,
+    @Body('isOccupied') isOccupied: boolean
+  ) {
+    return this.seatsService.updateSeatOccupancy(row, +seatNumber, isOccupied)
   }
 }

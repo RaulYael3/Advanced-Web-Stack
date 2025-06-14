@@ -31,7 +31,7 @@ export const Header = () => {
 
 	return (
 		<header
-			className='border-b w-11/12 mx-auto max-w-[1240px] sticky top-0 z-50 rounded-md'
+			className='border-b  mx-auto  sticky top-0 z-50 rounded-lg'
 			style={{
 				boxShadow: `-3px -3px 8px var(--color-brand-50), 3px 3px 8px -4px var(--color-brand-700),
 					inset -3px -3px 8px var(--color-brand-50), inset 3px 3px 8px -4px var(--color-brand-700)`,

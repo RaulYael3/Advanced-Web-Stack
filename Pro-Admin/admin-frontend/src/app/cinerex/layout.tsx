@@ -6,7 +6,7 @@ export default function CinerexLayout({
 	children: React.ReactNode
 }) {
 	return (
-		<div className='pt-10 bg-brand-100 h-screen'>
+		<div className=' bg-brand-100 h-screen'>
 			{/* Header global */}
 			<Header />
 

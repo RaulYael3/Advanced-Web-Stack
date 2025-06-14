@@ -31,10 +31,10 @@ export default function StepNavigation({
 				</Button>
 			)}
 			<div
-				className='flex-1 p-6 rounded-3xl bg-brand-100'
+				className='flex-1 p-6 rounded-md bg-brand-100'
 				style={{
-					boxShadow:
-						' -6px -6px 20px var(--color-brand-50),  6px 6px 20px -10px var(--color-brand-700)',
+					boxShadow: ` -6px -6px 20px var(--color-brand-50),  6px 6px 20px -10px var(--color-brand-700),
+						inset -4px -4px 12px var(--color-brand-50), inset 4px 4px 12px -6px var(--color-brand-700)`,
 				}}
 			>
 				<h2 className='text-3xl font-bold text-brand-dark-800'>

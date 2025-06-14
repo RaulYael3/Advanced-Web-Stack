@@ -102,12 +102,38 @@ export const ticketsApi = {
 	},
 
 	getCustomerTickets: async (email: string) => {
-		const response = await fetch(`${API_URL}/tickets/customer/${email}`, {
+		console.log('API: Getting tickets for email:', email)
+
+		const response = await fetch(
+			`${API_URL}/tickets/customer/${encodeURIComponent(email)}`,
+			{
+				credentials: 'include',
+			}
+		)
+
+		console.log('API: Response status:', response.status)
+
+		if (!response.ok) {
+			const errorText = await response.text()
+			console.error('API: Error response:', errorText)
+			throw new Error(
+				`Error fetching customer tickets: ${response.status} - ${errorText}`
+			)
+		}
+
+		const tickets = await response.json()
+		console.log('API: Tickets received:', tickets)
+		return tickets
+	},
+
+	// Método de debug para obtener todos los tickets
+	getAllTickets: async () => {
+		const response = await fetch(`${API_URL}/tickets`, {
 			credentials: 'include',
 		})
 
 		if (!response.ok) {
-			throw new Error('Error fetching customer tickets')
+			throw new Error('Error fetching all tickets')
 		}
 
 		return response.json()

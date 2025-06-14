@@ -166,10 +166,10 @@ export default function MovieCard({
 			</div>
 
 			<div
-				className='w-4 h-full min-h-60 rounded-full my-auto'
+				className='w-4 h-full min-h-60 rounded-full my-auto bg-brand-dark-500'
 				style={{
-					boxShadow:
-						'inset -3px -3px 10px var(--color-brand-50), inset 3px 3px 10px var(--color-brand-800)',
+					boxShadow: `inset -3px -3px 10px var(--color-brand-dark-400), inset 3px 3px 10px var(--color-brand-dark-800),
+						-3px -3px 10px var(--color-brand-50), 3px 3px 10px -5px var(--color-brand-700)`,
 				}}
 			/>
 

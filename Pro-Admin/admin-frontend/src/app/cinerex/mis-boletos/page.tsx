@@ -47,13 +47,48 @@ export default function MisBoletosPage() {
 
 			try {
 				setIsLoading(true)
+				console.log('Loading tickets for user:', user.email)
+
+				// Primero intentar con el endpoint específico
 				const customerTickets = await ticketsApi.getCustomerTickets(
 					user.email
 				)
+				console.log('Tickets received:', customerTickets)
 				setTickets(customerTickets)
+
+				// Si no hay tickets, intentar cargar todos los tickets para debug
+				if (customerTickets.length === 0) {
+					console.log(
+						'No tickets found, trying to load all tickets for debugging...'
+					)
+					try {
+						const allTicketsResponse = await fetch(
+							`${
+								process.env.NEXT_PUBLIC_API_URL ||
+								'http://localhost:4000'
+							}/tickets`,
+							{ credentials: 'include' }
+						)
+						if (allTicketsResponse.ok) {
+							const allTickets = await allTicketsResponse.json()
+							console.log('All tickets in system:', allTickets)
+						}
+					} catch (debugError) {
+						console.log(
+							'Could not fetch all tickets for debug:',
+							debugError
+						)
+					}
+				}
 			} catch (error) {
 				console.error('Error loading tickets:', error)
-				setError('Error al cargar los boletos')
+				setError(
+					`Error al cargar los boletos: ${
+						error instanceof Error
+							? error.message
+							: 'Error desconocido'
+					}`
+				)
 			} finally {
 				setIsLoading(false)
 			}
@@ -64,7 +99,7 @@ export default function MisBoletosPage() {
 
 	if (isLoading) {
 		return (
-			<div className='min-h-screen bg-brand-50 flex items-center justify-center'>
+			<div className='min-h-screen flex items-center justify-center'>
 				<div className='text-center'>
 					<div className='animate-spin rounded-full h-12 w-12 border-b-2 border-brand-dark-700 mx-auto mb-4'></div>
 					<p className='text-brand-dark-600'>Cargando boletos...</p>
@@ -74,9 +109,9 @@ export default function MisBoletosPage() {
 	}
 
 	return (
-		<div className='min-h-screen bg-brand-50 p-8'>
+		<div className='min-h-screen  p-8'>
 			<div className='max-w-4xl mx-auto'>
-				{/* Header */}
+				{/* Header con información de debug */}
 				<div className='flex items-center justify-between mb-8'>
 					<div className='flex items-center space-x-4'>
 						<Link href='/cinerex'>
@@ -110,33 +145,71 @@ export default function MisBoletosPage() {
 					</div>
 				)}
 
-				{/* Tickets */}
+				{/* Tickets con más información de debug */}
 				{tickets.length === 0 ? (
-					<div
-						className='bg-brand-100 rounded-3xl p-12 text-center'
-						style={{
-							boxShadow:
-								'-6px -6px 20px var(--color-brand-50), 6px 6px 20px -10px var(--color-brand-700)',
-						}}
-					>
-						<Ticket className='h-16 w-16 text-brand-dark-400 mx-auto mb-4' />
-						<h3 className='text-xl font-semibold text-brand-dark-800 mb-2'>
-							No tienes boletos
-						</h3>
-						<p className='text-brand-dark-600 mb-6'>
-							Aún no has comprado ningún boleto para funciones.
-						</p>
-						<Link href='/cinerex'>
+					<div>
+						<div
+							className='bg-brand-100 rounded-3xl p-12 text-center mb-6'
+							style={{
+								boxShadow:
+									'-6px -6px 20px var(--color-brand-50), 6px 6px 20px -10px var(--color-brand-700)',
+							}}
+						>
+							<Ticket className='h-16 w-16 text-brand-dark-400 mx-auto mb-4' />
+							<h3 className='text-xl font-semibold text-brand-dark-800 mb-2'>
+								No tienes boletos
+							</h3>
+							<p className='text-brand-dark-600 mb-6'>
+								No se encontraron boletos para tu email:{' '}
+								{user?.email}
+							</p>
+							<Link href='/cinerex'>
+								<Button
+									className='border-none bg-transparent text-brand-dark-700 hover:bg-brand-200 px-8 py-3'
+									style={{
+										boxShadow:
+											'-6px -6px 20px var(--color-brand-50), 6px 6px 20px -10px var(--color-brand-700)',
+									}}
+								>
+									Comprar Boletos
+								</Button>
+							</Link>
+						</div>
+
+						{/* Botón de debug para cargar todos los tickets */}
+						<div className='text-center'>
 							<Button
-								className='border-none bg-transparent text-brand-dark-700 hover:bg-brand-200 px-8 py-3'
-								style={{
-									boxShadow:
-										'-6px -6px 20px var(--color-brand-50), 6px 6px 20px -10px var(--color-brand-700)',
+								onClick={async () => {
+									try {
+										const response = await fetch(
+											`${
+												process.env
+													.NEXT_PUBLIC_API_URL ||
+												'http://localhost:4000'
+											}/tickets`,
+											{ credentials: 'include' }
+										)
+										if (response.ok) {
+											const allTickets =
+												await response.json()
+											console.log(
+												'Debug - All tickets:',
+												allTickets
+											)
+											alert(
+												`Found ${allTickets.length} tickets in system. Check console for details.`
+											)
+										}
+									} catch (error) {
+										console.error('Debug error:', error)
+									}
 								}}
+								variant='outline'
+								className='text-xs'
 							>
-								Comprar Boletos
+								Debug: Ver todos los tickets
 							</Button>
-						</Link>
+						</div>
 					</div>
 				) : (
 					<div className='grid gap-6'>
